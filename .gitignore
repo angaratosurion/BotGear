@@ -27,7 +27,8 @@ $RECYCLE.BIN/
 .DS_Store
 .AppleDouble
 .LSOverride
-
+obj
+Backups
 # Thumbnails
 ._*
 
@@ -38,10 +39,15 @@ $RECYCLE.BIN/
 .TemporaryItems
 .Trashes
 .VolumeIcon.icns
-
+Backups
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
 Temporary Items
 .apdisk
+Backups
+obj
+/Backups
+/BlackCogs/obj
+packages/
