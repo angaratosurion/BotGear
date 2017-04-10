@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BotGear.Data.Models
 {
-    public class BotGearUser : ISnowflakeEntity//, IMentionable//, IPresence
+    public class BotGearUser//, IMentionable//, IPresence
     {
         /// <summary> Gets the id of this user's avatar. </summary>
         public string AvatarId { get; set; }
@@ -23,14 +23,18 @@ namespace BotGear.Data.Models
         /// <summary> Returns true if this user is a webhook user. </summary>
         public bool IsWebhook { get; set; }
         /// <summary> Gets the username for this user. </summary>
-        ///  [Required]
+
+        [Required]
         public string Username { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         [Required]
         public ulong Id { get; set; }
         [Required]
+        [Key]
         public int uid { get; set; }
         public DateTime Birthday{ get; set; }
+
+        
     }
 }
