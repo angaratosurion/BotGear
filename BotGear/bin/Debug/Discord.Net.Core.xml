@@ -8,37 +8,22 @@
             <summary> Gets the current connection state of this client. </summary>
         </member>
         <member name="P:Discord.Audio.IAudioClient.Latency">
-            <summary> Gets the estimated round-trip latency, in milliseconds, to the gateway server. </summary>
+            <summary> Gets the estimated round-trip latency, in milliseconds, to the voice websocket server. </summary>
         </member>
-        <member name="M:Discord.Audio.IAudioClient.CreateOpusStream(System.Int32,System.Int32)">
-            <summary>
-            Creates a new outgoing stream accepting Opus-encoded data.
-            </summary>
-            <param name="samplesPerFrame">Samples per frame. Must be 120, 240, 480, 960, 1920 or 2880, representing 2.5, 5, 10, 20, 40 or 60 milliseconds respectively.</param>
-            <returns></returns>
+        <member name="P:Discord.Audio.IAudioClient.UdpLatency">
+            <summary> Gets the estimated round-trip latency, in milliseconds, to the voice UDP server. </summary>
         </member>
-        <member name="M:Discord.Audio.IAudioClient.CreateDirectOpusStream(System.Int32)">
-            <summary>
-            Creates a new outgoing stream accepting Opus-encoded data. This is a direct stream with no internal timer.
-            </summary>
-            <param name="samplesPerFrame">Samples per frame. Must be 120, 240, 480, 960, 1920 or 2880, representing 2.5, 5, 10, 20, 40 or 60 milliseconds respectively.</param>
-            <returns></returns>
+        <member name="M:Discord.Audio.IAudioClient.CreateOpusStream(System.Int32)">
+            <summary>Creates a new outgoing stream accepting Opus-encoded data.</summary>
         </member>
-        <member name="M:Discord.Audio.IAudioClient.CreatePCMStream(Discord.Audio.AudioApplication,System.Int32,System.Int32,System.Nullable{System.Int32},System.Int32)">
-            <summary>
-            Creates a new outgoing stream accepting PCM (raw) data.
-            </summary>
-            <param name="samplesPerFrame">Samples per frame. Must be 120, 240, 480, 960, 1920 or 2880, representing 2.5, 5, 10, 20, 40 or 60 milliseconds respectively.</param>
-            <param name="bitrate"></param>
-            <returns></returns>
+        <member name="M:Discord.Audio.IAudioClient.CreateDirectOpusStream">
+            <summary>Creates a new outgoing stream accepting Opus-encoded data. This is a direct stream with no internal timer.</summary>
         </member>
-        <member name="M:Discord.Audio.IAudioClient.CreateDirectPCMStream(Discord.Audio.AudioApplication,System.Int32,System.Int32,System.Nullable{System.Int32})">
-            <summary>
-            Creates a new direct outgoing stream accepting PCM (raw) data. This is a direct stream with no internal timer.
-            </summary>
-            <param name="samplesPerFrame">Samples per frame. Must be 120, 240, 480, 960, 1920 or 2880, representing 2.5, 5, 10, 20, 40 or 60 milliseconds respectively.</param>
-            <param name="bitrate"></param>
-            <returns></returns>
+        <member name="M:Discord.Audio.IAudioClient.CreatePCMStream(Discord.Audio.AudioApplication,System.Nullable{System.Int32},System.Int32)">
+            <summary>Creates a new outgoing stream accepting PCM (raw) data.</summary>
+        </member>
+        <member name="M:Discord.Audio.IAudioClient.CreateDirectPCMStream(Discord.Audio.AudioApplication,System.Nullable{System.Int32})">
+            <summary>Creates a new direct outgoing stream accepting PCM (raw) data. This is a direct stream with no internal timer.</summary>
         </member>
         <member name="P:Discord.DiscordConfig.DefaultRetryMode">
             <summary> Gets or sets how a request should act in the case of an error, by default. </summary>
