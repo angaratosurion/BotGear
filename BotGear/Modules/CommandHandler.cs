@@ -54,7 +54,7 @@ namespace BotGear.Modules
                 if (arg1 != null)
                 {
                     UserManager usermngr = new UserManager();
-                    usermngr.EditUser(arg1, arg2);
+                    await usermngr.EditUser(arg1, arg2);
                 }
             }
             catch (Exception ex)
