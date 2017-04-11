@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BotGear.Modules
 {
-    public class CommandHandler
+    public abstract class CommandHandler
     {
         private CommandService commands;
         private DiscordSocketClient client;
@@ -22,9 +22,10 @@ namespace BotGear.Modules
             //Create Command Service, Inject it into Dependency Map
             client = _map.Get<DiscordSocketClient>();
             client.MessageReceived += HandleCommand;
-           client.UserJoined += this.UserJoined;
+           client.UserJoined += UserJoined;
             client.UserLeft += UseLeft;
             client.UserUpdated += UserUpdated;
+
 
             commands = new CommandService();
             //_map.Add(commands);
@@ -46,7 +47,7 @@ namespace BotGear.Modules
             // client.MessageReceived += HandleCommand;
         }
 
-        public async Task UserUpdated(SocketUser arg1, SocketUser arg2)
+        public  Task UserUpdated(SocketUser arg1, SocketUser arg2)
         {
             try
             {
@@ -54,44 +55,50 @@ namespace BotGear.Modules
                 if (arg1 != null)
                 {
                     UserManager usermngr = new UserManager();
-                    await usermngr.EditUser(arg1, arg2);
+                    usermngr.EditUser(arg1, arg2);
                 }
+                return Task.CompletedTask;
             }
             catch (Exception ex)
             {
                 CommonTools.ErrorReporting(ex);
+                return Task.CompletedTask;
             }
         }
 
-        public async Task UseLeft(SocketGuildUser user)
+        public  Task UseLeft(SocketGuildUser user)
         {
             try
             {
                 var channel = user.Guild.DefaultChannel;
                 if (channel != null)
                 {
-                    await channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
+                      channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
                 }
+                return Task.CompletedTask;
             }
             catch (Exception ex)
             {
                 CommonTools.ErrorReporting(ex);
+                return Task.CompletedTask;
             }
         }
 
-        public  async Task UserJoined(SocketGuildUser  user)
+        public virtual Task UserJoined(SocketGuildUser  user)
         {
             try
             {
                 var channel = user.Guild.DefaultChannel;
                 if (channel !=null)
                 {
-                    await channel.SendMessageAsync(String.Format("Welcome {0} ",user.Mention));
+                    channel.SendMessageAsync(String.Format("Welcome {0} ",user.Mention));
                 }
+                return Task.CompletedTask;
             }
             catch (Exception ex)
             {
                 CommonTools.ErrorReporting(ex);
+                return Task.CompletedTask;
             }
         }
 
