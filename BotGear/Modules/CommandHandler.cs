@@ -1,4 +1,6 @@
-﻿using Discord.Commands;
+﻿using BotGear.Managers;
+using BotGear.Tools;
+using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,10 @@ namespace BotGear.Modules
             //Create Command Service, Inject it into Dependency Map
             client = _map.Get<DiscordSocketClient>();
             client.MessageReceived += HandleCommand;
+           client.UserJoined += this.UserJoined;
+            client.UserLeft += UseLeft;
+            client.UserUpdated += UserUpdated;
+
             commands = new CommandService();
             //_map.Add(commands);
             map = _map;
@@ -39,6 +45,56 @@ namespace BotGear.Modules
             //Send user message to get handled
             // client.MessageReceived += HandleCommand;
         }
+
+        public async Task UserUpdated(SocketUser arg1, SocketUser arg2)
+        {
+            try
+            {
+                
+                if (arg1 != null)
+                {
+                    UserManager usermngr = new UserManager();
+                    usermngr.EditUser(arg1, arg2);
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+
+        public async Task UseLeft(SocketGuildUser user)
+        {
+            try
+            {
+                var channel = user.Guild.DefaultChannel;
+                if (channel != null)
+                {
+                    await channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+
+        public  async Task UserJoined(SocketGuildUser  user)
+        {
+            try
+            {
+                var channel = user.Guild.DefaultChannel;
+                if (channel !=null)
+                {
+                    await channel.SendMessageAsync(String.Format("Welcome {0} ",user.Mention));
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+
         public CommandService Commands
         {
             get { return commands; }

@@ -13,16 +13,16 @@ namespace BotGear.Data.Models
         /// <summary> Gets the id of this user's avatar. </summary>
         public string AvatarId { get; set; }
         /// <summary> Gets the url to this user's avatar. </summary>
-        public string GetAvatarUrl { get; set; }
+        public string AvatarUrl { get; set; }
         /// <summary> Gets the per-username unique id for this user. </summary>
         public string Discriminator { get; set; }
         /// <summary> Gets the per-username unique id for this user. </summary>
         public ushort DiscriminatorValue { get; set; }
-        /// <summary> Returns true if this user is a bot user. </summary>
-        public bool IsBot { get; set; }
-        /// <summary> Returns true if this user is a webhook user. </summary>
-        public bool IsWebhook { get; set; }
-        /// <summary> Gets the username for this user. </summary>
+        ///// <summary> Returns true if this user is a bot user. </summary>
+        //public bool IsBot { get; set; }
+        ///// <summary> Returns true if this user is a webhook user. </summary>
+        //public bool IsWebhook { get; set; }
+        ///// <summary> Gets the username for this user. </summary>
 
         [Required]
         public string Username { get; set; }

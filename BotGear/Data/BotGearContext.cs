@@ -33,6 +33,6 @@ namespace BotGear.Data
             return new BotGearContext();
         }
 
-       public IDbSet<BotGearUser> User { get; set; }
+       public IDbSet<BotGearUser> Users { get; set; }
     }
 }
