@@ -58,7 +58,7 @@ namespace BotGear.Modules
                     if (arg1.Status != arg2.Status)
                     {
                         UserManager usermngr = new UserManager();
-                        if (arg2.Status != Discord.UserStatus.Online)
+                        if (arg1.Status != Discord.UserStatus.Online)
                         {
                             var channel = arg2.Guild.DefaultChannel;
                             if (channel != null)

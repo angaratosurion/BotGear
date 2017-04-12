@@ -11,9 +11,9 @@ namespace BotGear.Data.Models
     public class BotGearUser//, IMentionable//, IPresence
     {
         /// <summary> Gets the id of this user's avatar. </summary>
-        public string AvatarId { get; set; }
-        /// <summary> Gets the url to this user's avatar. </summary>
-        public string AvatarUrl { get; set; }
+        //public string AvatarId { get; set; }
+        ///// <summary> Gets the url to this user's avatar. </summary>
+        //public string AvatarUrl { get; set; }
         /// <summary> Gets the per-username unique id for this user. </summary>
         public string Discriminator { get; set; }
         /// <summary> Gets the per-username unique id for this user. </summary>
@@ -24,17 +24,19 @@ namespace BotGear.Data.Models
         //public bool IsWebhook { get; set; }
         ///// <summary> Gets the username for this user. </summary>
 
+
         [Required]
+        [Key]
         public string Username { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime RegisteredAt { get; set; }
         [Required]
-        public ulong Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        [Key]
-        public int uid { get; set; }
-        public DateTime Birthday{ get; set; }
+      //  [Key]
+       // public int uid { get; set; }
+        public DateTime  Birthday{ get; set; }
 
         
     }

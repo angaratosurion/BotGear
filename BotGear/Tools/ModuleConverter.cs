@@ -20,12 +20,13 @@ namespace BotGear.Tools
                 if (iuser!=null)
                 {
                     btuset = new BotGearUser();
-                    btuset.AvatarId = iuser.AvatarId;
+                   // btuset.AvatarId = iuser.AvatarId;
                     btuset.Discriminator = iuser.Discriminator;
                     btuset.DiscriminatorValue = iuser.DiscriminatorValue;
-                    btuset.AvatarUrl = iuser.GetAvatarUrl();
+                   // btuset.AvatarUrl = iuser.GetAvatarUrl();
+                  
                     btuset.Username = iuser.Username;
-                    btuset.Id = iuser.Id;
+                    btuset.Id = Convert.ToString(iuser.Id);
                     btuset.CreatedAt = iuser.CreatedAt.DateTime;
                     
                 }

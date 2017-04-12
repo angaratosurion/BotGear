@@ -21,14 +21,18 @@ namespace BotGear.Managers
 
                 if ( iuser !=null && birthday !=null)
                 {
+
                     BotGearUser user = conv.IUserToBotGearUser(iuser);
-                    if ( user!=null && this.GetUserbyId(user.Id)==null)
+                    BotGearUser exuser =await  this.GetUserbyId(user.Id);
+                    if ( user!=null && exuser==null)
                     {
                         user.Birthday = birthday;
+                        user.RegisteredAt = DateTime.Now;
                         db.Users.Add(user);
-                        await db.SaveChangesAsync();
+                       db.SaveChanges();
 
                     }
+                  
 
                 }
 
@@ -40,18 +44,40 @@ namespace BotGear.Managers
                
             }
         }
-        public async Task<BotGearUser> GetUserbyId(ulong id)
+        
+        public async Task<BotGearUser> GetUserbyId(string id)
         {
             try
             {
                 BotGearUser user = null;
-                if (id >0)
+                if (id !=null)
                 {
-                     user =  db.Users.FirstOrDefault(x => x.Id == id);
+                     user =  db.Users.FirstOrDefault(x => x.Id ==  id);
                    
 
                 }
                 return user;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+
+            }
+        }
+        public List<BotGearUser> GetUsers()
+        {
+            try
+            {
+                List<BotGearUser> users = null;
+
+                users = db.Users.ToList();
+
+
+                
+                return users;
 
             }
             catch (Exception ex)
@@ -99,10 +125,10 @@ namespace BotGear.Managers
                 {
                     BotGearUser tuser = conv.IUserToBotGearUser(iuser);
                     BotGearUser tuser2 = conv.IUserToBotGearUser(iuser2);
-                    BotGearUser user = await this.GetUserbyId(tuser.Id);
+                    BotGearUser user = await this.GetUserbyId( Convert.ToString(tuser.Id));
                     if (user != null)
                     {
-                        tuser2.uid = user.uid;
+                        tuser2.Id = user.Id;
                         tuser2.Birthday = user.Birthday;
                         db.Entry(user).CurrentValues.SetValues(tuser2);
 
@@ -128,7 +154,7 @@ namespace BotGear.Managers
                 if (iuser != null )
                 {
                    
-                    BotGearUser user = await this.GetUserbyId(iuser.Id);
+                    BotGearUser user = await this.GetUserbyId( Convert.ToString(iuser.Id));
                     if (user != null)
                     {
 
