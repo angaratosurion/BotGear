@@ -25,6 +25,7 @@ namespace BotGear.Modules
            client.UserJoined += UserJoined;
             client.UserLeft += UseLeft;
             client.UserUpdated += UserUpdated;
+            client.GuildMemberUpdated += GuildMemberUpdated;
 
 
             commands = new CommandService();
@@ -47,7 +48,46 @@ namespace BotGear.Modules
             // client.MessageReceived += HandleCommand;
         }
 
-        public  Task UserUpdated(SocketUser arg1, SocketUser arg2)
+        public virtual Task GuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
+        {
+            try
+            {
+
+                if (arg1 != null && arg2 !=null)
+                {
+                    if (arg1.Status != arg2.Status)
+                    {
+                        UserManager usermngr = new UserManager();
+                        if (arg2.Status != Discord.UserStatus.Online)
+                        {
+                            var channel = arg2.Guild.DefaultChannel;
+                            if (channel != null)
+                            {
+                                channel.SendMessageAsync(String.Format("Welcome {0} ", arg2.Mention));
+                            }
+                        }
+                        else if (arg2.Status == Discord.UserStatus.Offline)
+                        {
+                            var channel = arg2.Guild.DefaultChannel;
+                            if (channel != null)
+                            {
+                                channel.SendMessageAsync(String.Format("Bye {0} ", arg2.Mention));
+                            }
+                        }
+                    }
+                }
+
+                 
+                return Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+                return Task.CompletedTask;
+            }
+        }
+
+        public virtual Task UserUpdated(SocketUser arg1, SocketUser arg2)
         {
             try
             {
@@ -66,7 +106,7 @@ namespace BotGear.Modules
             }
         }
 
-        public  Task UseLeft(SocketGuildUser user)
+        public virtual Task UseLeft(SocketGuildUser user)
         {
             try
             {
