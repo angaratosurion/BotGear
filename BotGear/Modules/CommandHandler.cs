@@ -55,7 +55,7 @@ namespace BotGear.Modules
 
                 if (arg1 != null && arg2 !=null)
                 {
-                    if (arg1.Status != arg2.Status)
+                    if (arg1.Status != arg2.Status && arg1.IsBot==false && arg2.IsBot==false)
                     {
                         UserManager usermngr = new UserManager();
                         if (arg1.Status != Discord.UserStatus.Online)

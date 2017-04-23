@@ -42,7 +42,36 @@ namespace BotGear.Tools
                 return null;
             }
         }
-       
+        public BotGearServer IGuildToBotGearServer(IGuild iguild)
+        {
+            try
+            {
+                BotGearServer btuset = null;
+
+                if (iguild != null)
+                {
+                    btuset = new BotGearServer();
+                    // btuset.AvatarId = iuser.AvatarId;
+                    btuset.CreatedAt = iguild.CreatedAt.DateTime;
+                    btuset.Id = Convert.ToString(iguild.Id);
+                    btuset.OwnerId = Convert.ToString(iguild.OwnerId);
+                    btuset.Name = iguild.Name;
+                    
+
+                }
+
+
+                return btuset;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+        }
+
 
 
     }

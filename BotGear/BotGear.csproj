@@ -190,8 +190,10 @@
     <Compile Include="BotGearCore.cs" />
     <Compile Include="Data\BotGearContext.cs" />
     <Compile Include="Data\Models\BotGearUser.cs" />
+    <Compile Include="Data\Models\BotGearServer.cs" />
     <Compile Include="EmptyModuleInfo.cs" />
     <Compile Include="Interfaces\IModuleInfo.cs" />
+    <Compile Include="Managers\ServerManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modules\CommandHandler.cs" />

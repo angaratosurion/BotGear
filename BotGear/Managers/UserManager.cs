@@ -14,20 +14,33 @@ namespace BotGear.Managers
     {
         BotGearContext db = new BotGearContext();
         ModuleConverter conv = new ModuleConverter();
-        public async Task addUser(IUser iuser , DateTime birthday)
+        ServerManager srvMngr = new ServerManager();
+        public async Task addUser(IUser iuser , DateTime birthday,IGuild iguild)
         {
             try
             {
 
-                if ( iuser !=null && birthday !=null)
+                if ( iuser !=null && birthday !=null && iguild!=null)
                 {
 
                     BotGearUser user = conv.IUserToBotGearUser(iuser);
-                    BotGearUser exuser =await  this.GetUserbyId(user.Id);
-                    if ( user!=null && exuser==null)
+                    BotGearUser exuser = await this.GetUserbyId(user.Id);
+                    BotGearServer srv =  this.conv.IGuildToBotGearServer(iguild);
+                    
+                    if ( user!=null && exuser==null && srv!=null)
                     {
+                        if (  await  srvMngr.ServerExists(srv.Id)!=true)
+                        {
+                           await this.srvMngr.addServer(iguild);
+                        }
+                        else
+                        { string  id = srv.Id;
+                            srv = await srvMngr.getServerbyId(id);
+                        }
+                         
                         user.Birthday = birthday;
                         user.RegisteredAt = DateTime.Now;
+                        user.ServerId = srv.Id;
                         db.Users.Add(user);
                        db.SaveChanges();
 
