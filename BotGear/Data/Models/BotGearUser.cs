@@ -15,20 +15,19 @@ namespace BotGear.Data.Models
         public ushort DiscriminatorValue { get; set; }
       
         [Required]
-        [Key]
+      
         public string Username { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime RegisteredAt { get; set; }
         [Required]
+        [Key]
         public string Id { get; set; }
         [Required]
-      //  [Key]
-       // public int uid { get; set; }
+     
         public DateTime  Birthday{ get; set; }
 
-        [Required]
-        public string ServerId { get; set; }
+       
 
         
     }

@@ -189,8 +189,11 @@
     <Compile Include="Attributes\Assembly\ModuleInfoAssemblyWebSiteAttribute.cs" />
     <Compile Include="BotGearCore.cs" />
     <Compile Include="Data\BotGearContext.cs" />
+    <Compile Include="Data\Models\BotGearUsersServers.cs" />
     <Compile Include="Data\Models\BotGearUser.cs" />
     <Compile Include="Data\Models\BotGearServer.cs" />
+    <Compile Include="Data\ViewModels\BotGearViewServer.cs" />
+    <Compile Include="Data\ViewModels\BotGearViewUser.cs" />
     <Compile Include="EmptyModuleInfo.cs" />
     <Compile Include="Interfaces\IModuleInfo.cs" />
     <Compile Include="Managers\ServerManager.cs" />

@@ -12,7 +12,7 @@ namespace BotGear.Managers
 {
     public class UserManager
     {
-        BotGearContext db = new BotGearContext();
+      static   BotGearContext db = new BotGearContext();
         ModuleConverter conv = new ModuleConverter();
         ServerManager srvMngr = new ServerManager();
         public async Task addUser(IUser iuser , DateTime birthday,IGuild iguild)
@@ -37,12 +37,34 @@ namespace BotGear.Managers
                         { string  id = srv.Id;
                             srv = await srvMngr.getServerbyId(id);
                         }
-                         
+                          
                         user.Birthday = birthday;
                         user.RegisteredAt = DateTime.Now;
-                        user.ServerId = srv.Id;
+                        
                         db.Users.Add(user);
                        db.SaveChanges();
+                        user = await this.GetUserbyId(user.Id);
+                        if (await srvMngr.IsMembersToServer(srv.Id, user.Id) == false)
+                        {
+                            await this.srvMngr.AddMemberToServer(iguild, iuser);
+                        }
+
+                    }
+                    else if (user != null && exuser != null && srv != null)
+                    {
+                        if (await srvMngr.ServerExists(srv.Id) != true)
+                        {
+                            await this.srvMngr.addServer(iguild);
+                        }
+                        else
+                        {
+                            string id = srv.Id;
+                            srv = await srvMngr.getServerbyId(id);
+                        }
+                        if ( await srvMngr.IsMembersToServer(srv.Id,exuser.Id)==false)
+                        {
+                            await this.srvMngr.AddMemberToServer(iguild, iuser);
+                        }
 
                     }
                   
@@ -159,18 +181,26 @@ namespace BotGear.Managers
 
             }
         }
-        public async Task DeleteUser(IUser iuser)
+        public async Task DeleteUser(IUser iuser )
         {
             try
             {
 
-                if (iuser != null )
+                if (iuser != null   )
                 {
                    
                     BotGearUser user = await this.GetUserbyId( Convert.ToString(iuser.Id));
                     if (user != null)
                     {
 
+                        var serv = await this.srvMngr.getServerbymeMeberId(user.Id);
+                         if ( serv !=null)
+                        {
+                           foreach(var s in serv)
+                            {
+                                await this.srvMngr.deleteMemberfromServer(s.Id, iuser);
+                            }
+                        }
                         db.Users.Remove(user);
 
                         await db.SaveChangesAsync();

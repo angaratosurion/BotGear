@@ -12,8 +12,9 @@ namespace BotGear.Managers
 {
     public class ServerManager
     {
-        BotGearContext db = new BotGearContext();
+        static BotGearContext db = new BotGearContext();
         ModuleConverter conv = new ModuleConverter();
+       static UserManager usrmngr = new UserManager();
         public async Task addServer( IGuild iguild)
         {
             try
@@ -22,8 +23,8 @@ namespace BotGear.Managers
                 if (srv!=null && iguild != null && await this.ServerExists(srv.Id)==false)
                 {
 
-                    this.db.Servers.Add(srv);
-                    this.db.SaveChanges();
+                    db.Servers.Add(srv);
+                    db.SaveChanges();
 
                     
 
@@ -46,7 +47,45 @@ namespace BotGear.Managers
                 if (id != null)
                 {
 
-                    ap = this.db.Servers.FirstOrDefault(x => x.Id == id);
+                    ap = db.Servers.FirstOrDefault(x => x.Id == id);
+
+
+
+
+                }
+
+                return ap;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+
+            }
+        }
+        public async Task<List<BotGearServer>> getServerbymeMeberId(string memid)
+        {
+            try
+            {
+                List < BotGearServer> ap = null;
+                if (memid != null)
+                {
+
+                    var servusr = db.UsersServers.ToList().FindAll(x => x.UserId == memid).ToList();
+                    if (servusr !=null)
+                    {
+                        ap = new List<BotGearServer>();
+                        foreach( var s in servusr)
+                        {
+                            BotGearServer serv = await this.getServerbyId(s.ServerId);
+                             if (serv !=null)
+                            {
+                                ap.Add(serv);
+                            }
+                        }
+                    }
 
 
 
@@ -75,8 +114,8 @@ namespace BotGear.Managers
                     BotGearServer srv = await this.getServerbyId(id);
                      if ( srv !=null)
                     {
-                        this.db.Servers.Remove(srv);
-                        this.db.SaveChanges();
+                        db.Servers.Remove(srv);
+                        db.SaveChanges();
                     }
 
 
@@ -125,7 +164,7 @@ namespace BotGear.Managers
 
             }
         }
-        public async Task EditServer(string id ,IGuild iguild)
+        public async Task EditServerInfo(string id ,IGuild iguild)
         {
             try
             {
@@ -135,9 +174,9 @@ namespace BotGear.Managers
                     BotGearServer srv0 =  await this.getServerbyId(id);
                     if (srv0 != null)
                     {
-                        this.db.Entry(srv0).CurrentValues.SetValues(srv);
+                       db.Entry(srv0).CurrentValues.SetValues(srv);
 
-                        this.db.SaveChanges();
+                        db.SaveChanges();
                     }
 
 
@@ -150,6 +189,223 @@ namespace BotGear.Managers
             {
 
                 CommonTools.ErrorReporting(ex);
+
+            }
+        }
+        public async Task<List<BotGearUser>> getServerMembersbyServerId(string id)
+        {
+            try
+            {
+                List<BotGearUser> ap = null;
+                if (id != null && await this.ServerExists(id)==true)
+                {
+
+                    BotGearServer srv = await this.getServerbyId(id);
+
+                    List<BotGearUsersServers> usrvs = db.UsersServers.ToList().FindAll(x => x.ServerId == id);
+                    if ( usrvs !=null)
+                    {
+                        ap = new List<BotGearUser>();
+                         foreach(var u in usrvs)
+                        {
+
+                            BotGearUser user = await usrmngr.GetUserbyId(u.UserId);
+                             if ( user!=null)
+                            {
+                                ap.Add(user);
+                            }
+                        }
+                    }
+
+                    
+
+
+
+
+                }
+
+                return ap;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+
+            }
+        }
+        public async Task<Boolean>IsMembersToServer(string sid,string uid)
+        {
+            try
+            {
+                List<BotGearUser> users = await this.getServerMembersbyServerId(sid);
+                BotGearUser user = await usrmngr.GetUserbyId(uid);
+                Boolean ap = false;
+              
+                if (sid != null && await this.ServerExists(sid) == true && users !=null && uid!=null && user!=null)
+                {
+ 
+                       var tuser = db.UsersServers.FirstOrDefault(x => x.ServerId == sid && x.UserId == uid);
+                    if ( tuser!=null)
+                    {
+                        ap = true;
+                    }
+
+
+
+
+
+
+                }
+
+                return ap;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return false;
+
+            }
+        }
+        public async Task AddMemberToServer(IGuild iguild, IUser iuser)
+        {
+            try
+            {
+                var tuser = conv.IUserToBotGearUser(iuser);
+                var tser = conv.IGuildToBotGearServer(iguild);
+                BotGearUser user = await usrmngr.GetUserbyId(tuser.Id);
+                
+                if (tser != null && await this.ServerExists(tser.Id) == true && await  IsMembersToServer(tser.Id,user.Id)==false && user != null)
+                {
+                    string  sid = tser.Id;
+                    tser = await this.getServerbyId(sid);
+                    BotGearUsersServers usserv = new BotGearUsersServers();
+                    usserv.ServerId = tser.Id;
+                    usserv.UserId = user.Id;
+                    db.UsersServers.Add(usserv);
+                   await  db.SaveChangesAsync();
+
+
+
+
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+               
+
+            }
+        }
+        public async Task<BotGearUser> GetAMemberToServer(IGuild iguild, IUser iuser)
+        {
+            try
+            {
+                var tuser = conv.IUserToBotGearUser(iuser);
+                var tser = conv.IGuildToBotGearServer(iguild);
+                BotGearUser user = await usrmngr.GetUserbyId(tuser.Id);
+                BotGearUser ap = null;
+
+                if (tser != null && await this.ServerExists(tser.Id) == true && await IsMembersToServer(tser.Id, user.Id) == false && user == null)
+                {
+                    string sid = tser.Id;
+                    tser = await this.getServerbyId(sid);
+                    var t = db.UsersServers.FirstOrDefault(x => x.ServerId == sid && x.UserId ==  user.Id);
+                     if ( t!=null)
+                    {
+                        ap = await usrmngr.GetUserbyId(t.UserId);
+                    }
+
+
+
+
+                }
+                return ap;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+
+
+            }
+        }
+        public async Task deleteMemberfromServer(IGuild iguild, IUser iuser)
+        {
+            try
+            {
+                var tuser = conv.IUserToBotGearUser(iuser);
+                var tser = conv.IGuildToBotGearServer(iguild);
+                BotGearUser user = await usrmngr.GetUserbyId(tuser.Id);
+
+                if (tser != null && await this.ServerExists(tser.Id) == true && await IsMembersToServer(tser.Id, user.Id) == false && user != null)
+                {
+                    string sid = tser.Id;
+                    tser = await this.getServerbyId(sid);
+                    var suser = db.UsersServers.FirstOrDefault(x => x.ServerId == sid && x.UserId ==user.Id);
+                    if (tuser != null)
+                    {
+                        db.UsersServers.Remove(suser);
+                        await db.SaveChangesAsync();
+                    }
+
+
+
+
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+
+
+            }
+        }
+        public async Task deleteMemberfromServer(string sid , IUser iuser)
+        {
+            try
+            {
+                var tuser = conv.IUserToBotGearUser(iuser);
+               
+                BotGearUser user = await usrmngr.GetUserbyId(tuser.Id);
+
+                if ( await this.ServerExists(sid) == true && await IsMembersToServer(sid, user.Id) == false && user != null)
+                {
+                   
+                    var suser = db.UsersServers.FirstOrDefault(x => x.ServerId == sid && x.UserId == user.Id);
+                    if (tuser != null)
+                    {
+                        db.UsersServers.Remove(suser);
+                        await db.SaveChangesAsync();
+                    }
+
+
+
+
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+
 
             }
         }

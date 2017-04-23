@@ -4,37 +4,45 @@ using System.Data.Entity;
 
 namespace BotGear.Data
 {
-    public class BotGearContext :DbContext
+    public class BotGearContext : DbContext
     {
         public BotGearContext()
             : base("DefaultConnection")
         {
-           this.Configuration.AutoDetectChangesEnabled = true;
-            //this.Configuration.LazyLoadingEnabled = true;
-            //this.Configuration.ValidateOnSaveEnabled = false;
+            try
+            {
+            //    this.Configuration.AutoDetectChangesEnabled = true;
+            //    //this.Configuration.LazyLoadingEnabled = true;
+            //    //this.Configuration.ValidateOnSaveEnabled = false;
 
-            string path = AppDomain.CurrentDomain.BaseDirectory;
+                string path = AppDomain.CurrentDomain.BaseDirectory;
 
-            //System.IO.Directory.GetCurrentDirectory();
-            AppDomain.CurrentDomain.SetData("DataDirectory", path);
-            this.Configuration.AutoDetectChangesEnabled = true;
-           
+                //System.IO.Directory.GetCurrentDirectory();
+                AppDomain.CurrentDomain.SetData("DataDirectory", path);
+                this.Configuration.AutoDetectChangesEnabled = true;
+            }
+            catch(StackOverflowException ex)
+            {
+
+            }
+
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
 
-            base.OnModelCreating(modelBuilder);
+           // base.OnModelCreating(modelBuilder);
             modelBuilder.Properties<DateTime?>()
                   .Configure(c => c.HasColumnType("datetime2"));
 
         }
-            public static BotGearContext Create()
+        public static BotGearContext Create()
         {
             return new BotGearContext();
         }
 
-       public IDbSet<BotGearUser> Users { get; set; }
+        public IDbSet<BotGearUser> Users { get; set; }
         public IDbSet<BotGearServer> Servers { get; set; }
+        public IDbSet<BotGearUsersServers> UsersServers { get; set; } 
     }
 }
