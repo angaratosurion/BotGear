@@ -92,7 +92,7 @@ namespace BotGear.Modules
             try
             {
                 
-                if (arg1 != null)
+                if (arg1 != null && arg1.IsBot == false && arg2.IsBot == false)
                 {
                     UserManager usermngr = new UserManager();
                     usermngr.EditUser(arg1, arg2);
@@ -111,7 +111,7 @@ namespace BotGear.Modules
             try
             {
                 var channel = user.Guild.DefaultChannel;
-                if (channel != null)
+                if (channel != null && user.IsBot == false)
                 {
                       channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
                 }
@@ -129,7 +129,7 @@ namespace BotGear.Modules
             try
             {
                 var channel = user.Guild.DefaultChannel;
-                if (channel !=null)
+                if (channel !=null && user.IsBot ==false)
                 {
                     channel.SendMessageAsync(String.Format("Welcome {0} ",user.Mention));
                 }
