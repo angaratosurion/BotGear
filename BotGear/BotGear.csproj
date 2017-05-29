@@ -184,6 +184,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\Assembly\BotAtrribute.cs" />
     <Compile Include="Attributes\Assembly\BotPluginAttribute.cs" />
     <Compile Include="Attributes\Assembly\ModuleInfoAssemblySourceCodeAttribute.cs" />
     <Compile Include="Attributes\Assembly\ModuleInfoAssemblyWebSiteAttribute.cs" />
