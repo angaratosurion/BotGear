@@ -196,14 +196,24 @@
     <Compile Include="Data\ViewModels\BotGearViewServer.cs" />
     <Compile Include="Data\ViewModels\BotGearViewUser.cs" />
     <Compile Include="EmptyModuleInfo.cs" />
+    <Compile Include="Interfaces\IBot.cs" />
+    <Compile Include="Interfaces\IBotInfo.cs" />
     <Compile Include="Interfaces\IModuleInfo.cs" />
     <Compile Include="Managers\ServerManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modules\CommandHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\Bakatsuki\BakatsukiClient.cs" />
     <Compile Include="Tools\CommonTools.cs" />
     <Compile Include="Tools\ModuleConverter.cs" />
+    <Compile Include="Tools\SenkakuDownloader\Models\DownloadStats.cs" />
+    <Compile Include="Tools\SenkakuDownloader\SankakuApi\SankakuChannelUser.cs" />
+    <Compile Include="Tools\SenkakuDownloader\SankakuApi\SankakuHttpHandler.cs" />
+    <Compile Include="Tools\SenkakuDownloader\SankakuApi\SankakuPost.cs" />
+    <Compile Include="Tools\SenkakuDownloader\SankakuDownloader.cs" />
+    <Compile Include="Tools\Wikipedia\WikipediaClient.cs" />
+    <Compile Include="Tools\Wikipedia\WikipediaModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
