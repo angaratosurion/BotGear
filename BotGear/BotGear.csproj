@@ -188,6 +188,7 @@
     <Compile Include="Attributes\Assembly\BotPluginAttribute.cs" />
     <Compile Include="Attributes\Assembly\ModuleInfoAssemblySourceCodeAttribute.cs" />
     <Compile Include="Attributes\Assembly\ModuleInfoAssemblyWebSiteAttribute.cs" />
+    <Compile Include="Attributes\BotGearRunnerClassAttribute.cs" />
     <Compile Include="BotGearBotRunnerCore.cs" />
     <Compile Include="BotGearCore.cs" />
     <Compile Include="Data\BotGearContext.cs" />

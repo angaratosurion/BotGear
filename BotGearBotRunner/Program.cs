@@ -42,9 +42,13 @@ namespace BotGearBotRunner
                         Type t = asm.GetTypes().First(p => type.IsAssignableFrom(p));
                         if (t != null)
                         {
-                           _MethodInfo   mi= t.GetMethod("Start");
-                            object o= asm.CreateInstance(t.Name);
-                            mi.Invoke(o, null);
+                            _MethodInfo mi = t.GetMethod("Start");
+                           object o= asm.CreateInstance(t.Name);
+
+
+                            //bot.Start().GetAwaiter().GetResult();
+                            object[] a = new object[1];
+                           mi.Invoke(o, a);
                                 
                          }
 
