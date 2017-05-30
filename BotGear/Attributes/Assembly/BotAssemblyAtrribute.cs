@@ -8,9 +8,9 @@ namespace BotGear.Attributes.Assembly
 {
     [AttributeUsage(AttributeTargets.Assembly)]
     
-    public class BotAtrribute :  Attribute
+    public class BotAssemblyAtrribute :  Attribute
     {
-        public BotAtrribute(Boolean arg)
+        public BotAssemblyAtrribute(bool arg)
         {
             isBot = arg;
         }

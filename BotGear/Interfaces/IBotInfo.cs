@@ -8,8 +8,9 @@ namespace BotGear.Interfaces
 {
    public  interface IBotInfo
     {
-        String Namne { get; set; }
+        String Name { get; set; }
         String Version { get; set; }
         String  WebSite { get; set; }
+        String OathUrl { get; set; }
     }
 }
