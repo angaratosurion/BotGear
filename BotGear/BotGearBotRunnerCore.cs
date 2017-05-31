@@ -1,4 +1,5 @@
 ﻿using BotGear.Attributes.Assembly;
+using BotGear.Composition;
 using BotGear.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace BotGear
 {
    public  class BotGearBotRunnerCore
     {
+        static List<IBot> Bots;
+        
         public static IEnumerable<IBotInfo> GetAllModulesInfo()
         {
             List<IBotInfo> ap = new List<IBotInfo>();
@@ -63,6 +66,27 @@ namespace BotGear
         //        return null;
         //    }
         //}
+
+            public static void RunBots()
+        {
+            try
+            {
+                BotRunnerBootstrapper.BootStrap();
+                Bots = BotRunnerBootstrapper.GetInstances<IBot>(null);
+                if ( Bots!=null )
+                {
+                    foreach( var bot in Bots)
+                    {
+                        bot.Start();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+              //  return null;
+            }
+        }
         public static List<Assembly> GetAssemblies()
         {
             try

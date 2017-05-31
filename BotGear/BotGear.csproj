@@ -191,6 +191,7 @@
     <Compile Include="Attributes\BotGearRunnerClassAttribute.cs" />
     <Compile Include="BotGearBotRunnerCore.cs" />
     <Compile Include="BotGearCore.cs" />
+    <Compile Include="Composition\BotRunnerBootstrapper.cs" />
     <Compile Include="Data\BotGearContext.cs" />
     <Compile Include="Data\Models\BotGearUsersServers.cs" />
     <Compile Include="Data\Models\BotGearUser.cs" />

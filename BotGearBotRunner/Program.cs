@@ -28,34 +28,35 @@ namespace BotGearBotRunner
 #else
             ShowWindow(handle, SW_HIDE);
 #endif
-            var ass = BotGearBotRunnerCore.GetAssemblies();
-            if (ass != null && ass.Count > 0)
-            {
-                foreach (var asm in ass)
-                {
-                    //    var myClassType = asm.GetTypes()
-                    //.FirstOrDefault(t => t.GetCustomAttributes()
-                    //.Any(a => a.GetType().Name == "BotAssemblyAtrribute"));
-                    // if (myClassType != null)
-                    {
-                        var type = typeof(IBot);
-                        Type t = asm.GetTypes().First(p => type.IsAssignableFrom(p));
-                        if (t != null)
-                        {
-                            _MethodInfo mi = t.GetMethod("Start");
-                           object o= asm.CreateInstance(t.Name);
+            //var ass = BotGearBotRunnerCore.GetAssemblies();
+            //if (ass != null && ass.Count > 0)
+            //{
+            //    foreach (var asm in ass)
+            //    {
+            //        //    var myClassType = asm.GetTypes()
+            //        //.FirstOrDefault(t => t.GetCustomAttributes()
+            //        //.Any(a => a.GetType().Name == "BotAssemblyAtrribute"));
+            //        // if (myClassType != null)
+            //        {
+            //            var type = typeof(IBot);
+            //            Type t = asm.GetTypes().First(p => type.IsAssignableFrom(p));
+            //            if (t != null)
+            //            {
+            //                _MethodInfo mi = t.GetMethod("Start");
+            //               object o= asm.CreateInstance(t.Name);
 
 
-                            //bot.Start().GetAwaiter().GetResult();
-                            object[] a = new object[1];
-                           mi.Invoke(o, a);
-                                
-                         }
+            //                //bot.Start().GetAwaiter().GetResult();
+            //                object[] a = new object[1];
+            //               mi.Invoke(o, a);
+
+            //             }
 
 
-                    }
-                }
-            }
+            //        }
+            //    }
+
+            BotGearBotRunnerCore.RunBots();
             while (true)
             {
                 Task.Delay(-1);
