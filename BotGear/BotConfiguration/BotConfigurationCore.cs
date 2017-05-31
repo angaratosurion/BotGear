@@ -9,48 +9,101 @@ using Discord.WebSocket;
 using Discord.Commands;
 using BotGear.Modules;
 using System.IO;
+using BotGear.Tools;
 
 namespace BotGear.BotConfiguration
 {
-   public  class BotConfigurationCore
+    public class BotConfigurationCore
     {
         private DiscordSocketClient _client;
         private IConfiguration _config;
 
 
 
-        public async  Task ConfigureBot()
+        public async Task<DiscordSocketClient> ConfigureBot(DiscordSocketClient tclient, CommandHandler commhndl)
         {
-            var services = ConfigureServices();
-           // services.GetRequiredService<LogService>();
-            await services.GetRequiredService<CommandHandler>().Install(services);
+            try
+            {
+                _config = BuildConfig();
+                if (commhndl != null && tclient!=null)
+                {
+                    _client = tclient;
+                    var services = ConfigureServices(commhndl);
+                    // services.GetRequiredService<LogService>();
+                    await services.GetRequiredService<CommandHandler>().Install(services);
+                }
+                return _client;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+
         }
-        public IServiceProvider ConfigureServices()
+        public IServiceProvider ConfigureServices(CommandHandler commhndl)
         {
-            return new ServiceCollection()
-                // Base
-                .AddSingleton(_client)
-                .AddSingleton<CommandService>()
-                .AddSingleton<CommandHandler>()
-                // Logging
-               // .AddLogging()
-              //  .AddSingleton<LogService>()
-                // Extra
-                .AddSingleton(_config)
-                // Add additional services here...
-                .BuildServiceProvider();
+            try
+            {
+                if (commhndl != null)
+                {
+
+                    return new ServiceCollection()
+                        // Base
+                        .AddSingleton(_client)
+                        .AddSingleton<CommandService>()
+                        .AddSingleton<CommandHandler>(commhndl)
+                        // Logging
+                        // .AddLogging()
+                        //  .AddSingleton<LogService>()
+                        // Extra
+                        .AddSingleton(_config)
+                        // Add additional services here...
+                        .BuildServiceProvider();
+                }
+                else
+                {
+                    return new ServiceCollection()
+                       // Base
+                       .AddSingleton(_client)
+                       .AddSingleton<CommandService>()
+                       .AddSingleton<CommandHandler>()
+                       // Logging
+                       // .AddLogging()
+                       //  .AddSingleton<LogService>()
+                       // Extra
+                       .AddSingleton(_config)
+                       // Add additional services here...
+                       .BuildServiceProvider();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
         }
 
         public IConfiguration BuildConfig()
         {
-            return new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
+            try
+            {
+                return new ConfigurationBuilder()
+                   .SetBasePath(Directory.GetCurrentDirectory())
 #if DEBUG
                .AddJsonFile("config_debug.json")
 #else
                 .AddJsonFile("config.json")
 #endif
                 .Build();
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
         }
     }
 }

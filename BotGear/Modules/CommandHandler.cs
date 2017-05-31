@@ -29,14 +29,18 @@ namespace BotGear.Modules
             //Create Command Service, Inject it into Dependency Map
             //client = _map.Get<DiscordSocketClient>();
             _provider = provider;
+            
             client.MessageReceived += HandleCommand;
            client.UserJoined += UserJoined;
             client.UserLeft += UseLeft;
             client.UserUpdated += UserUpdated;
             client.GuildMemberUpdated += GuildMemberUpdated;
 
-
-            commands = new CommandService();
+            if (commands == null)
+            {
+                commands = new CommandService();
+            }
+            
             //_map.Add(commands);
           //  map = _map;
 
