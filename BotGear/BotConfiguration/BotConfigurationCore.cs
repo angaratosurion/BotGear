@@ -45,7 +45,11 @@ namespace BotGear.BotConfiguration
         {
             return new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
+#if DEBUG
+               .AddJsonFile("config_debug.json")
+#else
                 .AddJsonFile("config.json")
+#endif
                 .Build();
         }
     }

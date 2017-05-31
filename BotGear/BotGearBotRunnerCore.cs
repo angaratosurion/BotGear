@@ -77,6 +77,7 @@ namespace BotGear
                 {
                     foreach( var bot in Bots)
                     {
+                        bot.Configure();
                         bot.Start();
                     }
                 }
