@@ -76,9 +76,6 @@
         <member name="T:Discord.Audio.Streams.InputStream">
             <summary> Reads the payload from an RTP frame </summary>
         </member>
-        <member name="T:Discord.Audio.Streams.JitterBuffer">
-            <summary> Wraps another stream with a timed buffer and packet loss detection. </summary>
-        </member>
         <member name="T:Discord.Audio.Streams.OpusDecodeStream">
             <summary> Converts Opus to PCM </summary>
         </member>

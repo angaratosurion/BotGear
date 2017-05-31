@@ -468,45 +468,45 @@
         </member>
         <member name="M:System.Data.Entity.SqlServerCompact.SqlCeFunctions.CharIndex(System.String,System.String)">
             <summary>Returns the starting position of one expression found within another expression.</summary>
-            <returns>The starting position of  target  if it is found in  toSearch .</returns>
+            <returns>The starting position of  toFind  if it is found in  toSearch .</returns>
+            <param name="toFind">The string expression to be found.</param>
             <param name="toSearch">The string expression to be searched.</param>
-            <param name="target">The string expression to be found.</param>
         </member>
         <member name="M:System.Data.Entity.SqlServerCompact.SqlCeFunctions.CharIndex(System.Byte[],System.Byte[])">
             <summary>Returns the starting position of one expression found within another expression.</summary>
-            <returns>The starting position of  target  if it is found in  toSearch .</returns>
+            <returns>The starting position of  toFind  if it is found in  toSearch .</returns>
+            <param name="toFind">The string expression to be found.</param>
             <param name="toSearch">The string expression to be searched.</param>
-            <param name="target">The string expression to be found.</param>
         </member>
         <member name="M:System.Data.Entity.SqlServerCompact.SqlCeFunctions.CharIndex(System.String,System.String,System.Nullable{System.Int32})">
             <summary>Returns the starting position of one expression found within another expression.</summary>
-            <returns>The starting position of  target  if it is found in  toSearch .</returns>
+            <returns>The starting position of  toFind  if it is found in  toSearch .</returns>
+            <param name="toFind">The string expression to be found.</param>
             <param name="toSearch">The string expression to be searched.</param>
-            <param name="target">The string expression to be found.</param>
             <param name="startLocation">The character position in  toSearch  where searching begins.</param>
         </member>
         <member name="M:System.Data.Entity.SqlServerCompact.SqlCeFunctions.CharIndex(System.Byte[],System.Byte[],System.Nullable{System.Int32})">
             <summary>Returns the starting position of one expression found within another expression.</summary>
-            <returns>The starting position of  target  if it is found in  toSearch .</returns>
+            <returns>The starting position of  toFind  if it is found in  toSearch .</returns>
+            <param name="toFind">The string expression to be found.</param>
             <param name="toSearch">The string expression to be searched.</param>
-            <param name="target">The string expression to be found.</param>
             <param name="startLocation">The character position in  toSearch  where searching begins.</param>
         </member>
         <member name="M:System.Data.Entity.SqlServerCompact.SqlCeFunctions.CharIndex(System.String,System.String,System.Nullable{System.Int64})">
             <summary>Returns the starting position of one expression found within another expression.</summary>
             <returns>
-            A <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" /> value that is the starting position of  target  if it is found in  toSearch .
+            A <see cref="T:System.Nullable`1" /> of <see cref="T:System.Int64" /> value that is the starting position of  toFind  if it is found in  toSearch .
             </returns>
+            <param name="toFind">The string expression to be found.</param>
             <param name="toSearch">The string expression to be searched.</param>
-            <param name="target">The string expression to be found.</param>
             <param name="startLocation">The character position in  toSearch  where searching begins.</param>
         </member>
         <member name="M:System.Data.Entity.SqlServerCompact.SqlCeFunctions.CharIndex(System.Byte[],System.Byte[],System.Nullable{System.Int64})">
             <summary>Returns the starting position of one expression found within another expression.</summary>
-            <returns>The starting position of  target  if it is found in  toSearch .</returns>
+            <returns>The starting position of  toFind  if it is found in  toSearch .</returns>
+            <param name="toFind">The string expression to be found.</param>
             <param name="toSearch">The string expression to be searched.</param>
-            <param name="target">The string expression to be found.</param>
-            <param name="startLocation">The character position in  toSearch  at which searching begins.</param>
+            <param name="startLocation">The character position in  toSearch  where searching begins.</param>
         </member>
         <member name="M:System.Data.Entity.SqlServerCompact.SqlCeFunctions.NChar(System.Nullable{System.Int32})">
             <summary>Returns the Unicode character with the specified integer code, as defined by the Unicode standard.</summary>

@@ -15,12 +15,20 @@ namespace BotGear.Modules
     {
         private CommandService commands;
         private DiscordSocketClient client;
-        private IDependencyMap map;
+        private IServiceProvider _provider;
+        /// private IDependencyMap map;
+        public CommandHandler(IServiceProvider provider, DiscordSocketClient discord, CommandService tcommands)
+        {
+            client= discord;
+            commands = tcommands;
 
-        public async Task Install(IDependencyMap _map)
+           // client.MessageReceived += MessageReceived;
+        }
+        public async Task Install(IServiceProvider provider)
         {
             //Create Command Service, Inject it into Dependency Map
-            client = _map.Get<DiscordSocketClient>();
+            //client = _map.Get<DiscordSocketClient>();
+            _provider = provider;
             client.MessageReceived += HandleCommand;
            client.UserJoined += UserJoined;
             client.UserLeft += UseLeft;
@@ -30,7 +38,7 @@ namespace BotGear.Modules
 
             commands = new CommandService();
             //_map.Add(commands);
-            map = _map;
+          //  map = _map;
 
             //await commands.AddModulesAsync(Assembly.GetExecutingAssembly());
             var plugins = BotGearCore.GetAssemblies();
@@ -162,7 +170,7 @@ namespace BotGear.Modules
             //Create a Command Context
             var context = new CommandContext(client, message);
             //Execute the command, store the result
-            var result = await commands.ExecuteAsync(context, argPos, map);
+            var result = await commands.ExecuteAsync(context, argPos,_provider);
 
             //If the command failed, notify the user
             if (!result.IsSuccess)

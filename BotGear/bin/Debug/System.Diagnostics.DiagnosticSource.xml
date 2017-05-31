@@ -739,6 +739,11 @@
             across async calls.
             </summary>
         </member>
+        <member name="M:System.Diagnostics.Activity.GetUtcNow">
+            <summary>
+            Returns high resolution (1 DateTime tick) current UTC DateTime. 
+            </summary>
+        </member>
         <member name="T:System.Diagnostics.HttpHandlerDiagnosticListener">
             <summary>
             A HttpHandlerDiagnosticListener is a DiagnosticListener for .NET 4.6 and above where
