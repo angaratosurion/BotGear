@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using BotGear.Attributes.Assembly;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -34,3 +35,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.2.0.0")]
 [assembly: AssemblyFileVersion("0.2.0.0")]
+[assembly: BotPlugin(true)]
+[assembly: ModuleInfoAssemblyWebSite("http://pariskoutsioukis.net/blog/")]
+[assembly: ModuleInfoAssemblySourceCode("https://github.com/angaratosurion/BotGear/")]
+

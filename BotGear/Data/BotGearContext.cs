@@ -45,6 +45,7 @@ namespace BotGear.Data
 
         public IDbSet<BotGearUser> Users { get; set; }
         public IDbSet<BotGearServer> Servers { get; set; }
-        public IDbSet<BotGearUsersServers> UsersServers { get; set; } 
+        public IDbSet<BotGearUsersServers> UsersServers { get; set; }
+        public IDbSet<BotGearServerConfiguration> ServerConfiguration { get; set; }
     }
 }

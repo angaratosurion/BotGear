@@ -32,7 +32,7 @@ namespace BotGear
             try
             {
                 List<Assembly> ap = new List<Assembly>();
-                string tmp = Assembly.GetCallingAssembly().Location;
+                //string tmp = Assembly.GetCallingAssembly().Location;
 
                 if (Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins")) == false)
                 {
