@@ -248,6 +248,7 @@
     <Compile Include="Interfaces\IBot.cs" />
     <Compile Include="Interfaces\IBotInfo.cs" />
     <Compile Include="Interfaces\IModuleInfo.cs" />
+    <Compile Include="Managers\ServerConfigManager.cs" />
     <Compile Include="Managers\ServerManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Migrations\Configuration.cs" />
