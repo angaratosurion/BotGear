@@ -77,7 +77,7 @@ namespace BotGear.Modules
                             var channel = arg2.Guild.DefaultChannel;
                             if (channel != null)
                             {
-                                channel.SendMessageAsync(String.Format("Welcome {0} ", arg2.Mention));
+                                channel.SendMessageAsync(String.Format("Welcome {0}, type !rules to read the rules ", arg2.Mention));
                             }
                         }
                         else if (arg2.Status == Discord.UserStatus.Offline)
@@ -145,7 +145,7 @@ namespace BotGear.Modules
                 var channel = user.Guild.DefaultChannel;
                 if (channel !=null && user.IsBot ==false)
                 {
-                    channel.SendMessageAsync(String.Format("Welcome {0} ",user.Mention));
+                    channel.SendMessageAsync(String.Format("Welcome {0} type !rules to read the rules ", user.Mention));
                 }
                 return Task.CompletedTask;
             }

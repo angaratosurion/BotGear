@@ -119,6 +119,37 @@ namespace BotGear.Managers
 
             }
         }
+        public async Task EditServerConfiguration(string ServerId,BotGearServerConfiguration newvals)
+        {
+            try
+            {
+
+                if (String.IsNullOrWhiteSpace(ServerId) != true && await this.ServersConfigurationExists(ServerId) != false
+                    && newvals !=null)
+                {
+                    var x = await this.GetServersConfigurationById(ServerId);
+                     if ( x!=null)
+                    {
+                        BotGearServerConfiguration newconf = new BotGearServerConfiguration();
+                        newconf.rules = newvals.rules;
+                        newconf.rules_channel_name = newvals.rules_channel_name;
+                        newconf.ServerId = x.ServerId;
+                        db.Entry(x).CurrentValues.SetValues(newconf);
+
+
+                        await db.SaveChangesAsync();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+
+
+            }
+        }
 
     }
 }
