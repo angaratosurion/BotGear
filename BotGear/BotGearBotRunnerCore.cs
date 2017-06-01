@@ -73,7 +73,7 @@ namespace BotGear
             {
                 BotRunnerBootstrapper.BootStrap();
                 // Bots = BotRunnerBootstrapper.GetInstances<IBot>(null);
-                Bots = BotRunnerBootstrapper.GetBots();
+               /* Bots = BotRunnerBootstrapper.GetBots();
                 if ( Bots!=null )
                 {
                     foreach( var bot in Bots)
@@ -82,7 +82,7 @@ namespace BotGear
                         bot.Start().GetAwaiter();
                     }
                 }
-                await Task.Delay(-1);
+                await Task.Delay(-1);*/
 
             }
             catch (Exception ex)

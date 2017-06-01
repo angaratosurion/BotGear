@@ -12,14 +12,10 @@ namespace BotGear.Managers
 {
     public class UserManager
     {
-        static BotGearContext db;//
+        static BotGearContext db = new BotGearContext();
         ModuleConverter conv = new ModuleConverter();
-        ServerManager srvMngr;
-        public UserManager(string botname)
-        {
-            db = new BotGearContext(botname);
-            srvMngr = new ServerManager(botname);
-        }
+        ServerManager srvMngr = new ServerManager();
+       
         public async Task addUser(IUser iuser , DateTime birthday,IGuild iguild)
         {
             try

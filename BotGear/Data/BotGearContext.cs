@@ -28,27 +28,7 @@ namespace BotGear.Data
             }
 
         }
-        public BotGearContext(string botname)
-            : base("DefaultConnection")
-        {
-            try
-            {
-                //    this.Configuration.AutoDetectChangesEnabled = true;
-                //    //this.Configuration.LazyLoadingEnabled = true;
-                //    //this.Configuration.ValidateOnSaveEnabled = false;
-
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,botname);
-
-                //System.IO.Directory.GetCurrentDirectory();
-                AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                this.Configuration.AutoDetectChangesEnabled = true;
-            }
-            catch (StackOverflowException ex)
-            {
-
-            }
-
-        }
+      
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

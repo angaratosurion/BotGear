@@ -9,7 +9,7 @@ namespace BotGear.Interfaces
 {
     public interface IBot
     {
-        Task ConfigureHostedONBotGearRunnder();
+     
         Task Configure();
          Task Start();
           Task Log(LogMessage arg);
