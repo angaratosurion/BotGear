@@ -67,20 +67,22 @@ namespace BotGear
         //    }
         //}
 
-            public static void RunBots()
+            public async    Task RunBots()
         {
             try
             {
                 BotRunnerBootstrapper.BootStrap();
-                Bots = BotRunnerBootstrapper.GetInstances<IBot>(null);
+                // Bots = BotRunnerBootstrapper.GetInstances<IBot>(null);
+                Bots = BotRunnerBootstrapper.GetBots();
                 if ( Bots!=null )
                 {
                     foreach( var bot in Bots)
                     {
-                        bot.Configure();
-                        bot.Start();
+                        bot.ConfigureHostedONBotGearRunnder().GetAwaiter();
+                        bot.Start().GetAwaiter();
                     }
                 }
+                await Task.Delay(-1);
 
             }
             catch (Exception ex)

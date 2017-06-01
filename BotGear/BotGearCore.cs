@@ -32,6 +32,7 @@ namespace BotGear
             try
             {
                 List<Assembly> ap = new List<Assembly>();
+                string tmp = Assembly.GetCallingAssembly().Location;
 
                 if (Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins")) == false)
                 {
@@ -69,6 +70,48 @@ namespace BotGear
             }
         }
 
+        public static List<Assembly> GetAssemblies(string botname)
+        {
+            try
+            {
+                List<Assembly> ap = new List<Assembly>();
+                string plgpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Bots", botname, "plugins");
+                string botpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Bots", botname);
+
+                if (Directory.Exists(plgpath) == false)
+                {
+                    Directory.CreateDirectory(plgpath);
+                }
+                var files = Directory.GetFiles(plgpath, "*.dll");
+
+                foreach (var f in files)
+                {
+                    var a = GetAssemblyInfo(f);
+                    if (a != null)
+                    {
+                        var asm = Assembly.LoadFrom(f);
+                        ap.Add(asm);
+
+                    }
+                }
+                files = Directory.GetFiles(botpath, "*.dll");
+                foreach (var f in files)
+                {
+                    var a = GetAssemblyInfo(f);
+                    if (a != null)
+                    {
+                        var asm = Assembly.LoadFrom(f);
+                        ap.Add(asm);
+                    }
+                }
+
+                return ap;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static List<IModuleInfo> GetAssembliesInfo()
         {
             try

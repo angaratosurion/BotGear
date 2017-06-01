@@ -17,6 +17,7 @@ namespace BotGear.Modules
         private DiscordSocketClient client;
         private IServiceProvider _provider;
         /// private IDependencyMap map;
+         string botname;
         public CommandHandler(IServiceProvider provider, DiscordSocketClient discord, CommandService tcommands)
         {
             client= discord;
@@ -59,6 +60,45 @@ namespace BotGear.Modules
             //Send user message to get handled
             // client.MessageReceived += HandleCommand;
         }
+        public async Task Install(IServiceProvider provider,string botname)
+        {
+
+            //Create Command Service, Inject it into Dependency Map
+            //client = _map.Get<DiscordSocketClient>();
+            if (botname != null)
+            {
+                _provider = provider;
+
+                client.MessageReceived += HandleCommand;
+                client.UserJoined += UserJoined;
+                client.UserLeft += UseLeft;
+                client.UserUpdated += UserUpdated;
+                client.GuildMemberUpdated += GuildMemberUpdated;
+
+                if (commands == null)
+                {
+                    commands = new CommandService();
+                }
+
+                //_map.Add(commands);
+                //  map = _map;
+
+                //await commands.AddModulesAsync(Assembly.GetExecutingAssembly());
+                var plugins = BotGearCore.GetAssemblies(botname);
+                if (plugins != null)
+                {
+                    foreach (var a in plugins)
+                    {
+                        await commands.AddModulesAsync(a);
+
+                    }
+                }
+
+
+                //Send user message to get handled
+                // client.MessageReceived += HandleCommand;
+            }
+        }
 
         public virtual Task GuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
         {
@@ -69,7 +109,7 @@ namespace BotGear.Modules
                 {
                     if (arg1.Status != arg2.Status && arg1.IsBot==false && arg2.IsBot==false)
                     {
-                        UserManager usermngr = new UserManager();
+                        UserManager usermngr = new UserManager(botname);
                         if (arg1.Status != Discord.UserStatus.Online)
                         {
                             var channel = arg2.Guild.DefaultChannel;
@@ -106,7 +146,7 @@ namespace BotGear.Modules
                 
                 if (arg1 != null && arg1.IsBot == false && arg2.IsBot == false)
                 {
-                    UserManager usermngr = new UserManager();
+                    UserManager usermngr = new UserManager(botname);
                     usermngr.EditUser(arg1, arg2);
                 }
                 return Task.CompletedTask;

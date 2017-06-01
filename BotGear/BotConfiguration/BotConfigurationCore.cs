@@ -42,6 +42,29 @@ namespace BotGear.BotConfiguration
             }
 
         }
+
+        public async Task<DiscordSocketClient> ConfigureBotOnBotGearRunner(DiscordSocketClient tclient, CommandHandler commhndl,string botname)
+        {
+            try
+            {
+                _config = BuildConfig();
+                if (commhndl != null && tclient != null && botname!=null)
+                {
+                    _client = tclient;
+                    var services = ConfigureServices(commhndl);
+                    // services.GetRequiredService<LogService>();
+                    await services.GetRequiredService<CommandHandler>().Install(services,botname);
+                }
+                return _client;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+
+        }
         public IServiceProvider ConfigureServices(CommandHandler commhndl)
         {
             try
@@ -90,6 +113,7 @@ namespace BotGear.BotConfiguration
         {
             try
             {
+                string dir = Directory.GetCurrentDirectory();
                 return new ConfigurationBuilder()
                    .SetBasePath(Directory.GetCurrentDirectory())
 #if DEBUG

@@ -20,6 +20,8 @@ namespace BotGear.Composition
       
         [ImportMany]
         private static IEnumerable<Lazy<IModuleInfo>> ModuleInfos;
+        [ImportMany]
+        private static IEnumerable<Lazy<IBot>> Bots = null;
         public static void BootStrap()
         {
             try
@@ -70,7 +72,8 @@ namespace BotGear.Composition
                 
                 CompositionContainer.ComposeParts();
                  ModuleInfos = CompositionContainer.GetExports<IModuleInfo>();
-                
+                Bots= CompositionContainer.GetExports<IBot>();
+
                 Catlgs = catalog;
                 IsLoaded = true;
             }
@@ -134,6 +137,28 @@ namespace BotGear.Composition
                 return null;
             }
         }
+        public static List<IBot> GetBots()
+        {
+            try
+            {
+                List<IBot> ap = null;
+                if ( Bots!=null)
+                {
+                    ap = new List<IBot>();
+                    foreach(var bot in Bots)
+                    {
+                        ap.Add((IBot)bot.Value);
+                    }
+                }
 
+                return ap;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+        }
     }
 }

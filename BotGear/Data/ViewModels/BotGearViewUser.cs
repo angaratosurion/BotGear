@@ -14,7 +14,7 @@ namespace BotGear.Data.ViewModels
     public class BotGearViewUser
     {
 
-        ServerManager srvMngr = new ServerManager();
+        ServerManager srvMngr;
         public string Discriminator { get; set; }
         
         public ushort DiscriminatorValue { get; set; }
@@ -33,6 +33,10 @@ namespace BotGear.Data.ViewModels
 
        // [Required]
         public List <BotGearServer> Servers { get; set; }
+        public BotGearViewUser(string botname)
+        {
+            srvMngr = new ServerManager(botname);
+        }
         public async void ImportFromModel (BotGearUser model)
         {
             try

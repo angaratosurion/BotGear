@@ -12,9 +12,9 @@ namespace BotGear.Managers
 {
     public class ServerManager
     {
-        static BotGearContext db = new BotGearContext();
+        static BotGearContext db;
         ModuleConverter conv = new ModuleConverter();
-       static UserManager usrmngr = new UserManager();
+        static UserManager usrmngr;
         public async Task addServer( IGuild iguild)
         {
             try
@@ -102,6 +102,11 @@ namespace BotGear.Managers
                 return null;
 
             }
+        }
+        public ServerManager(string botname)
+        {
+            db = new BotGearContext(botname);
+            usrmngr = new UserManager(botname);
         }
         public async Task  deleteServerbyId(string id)
         {
