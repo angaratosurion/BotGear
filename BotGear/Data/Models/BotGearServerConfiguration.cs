@@ -12,7 +12,8 @@ namespace BotGear.Data.Models
         [Required]
         [Key]
         public string ServerId { get; set; }
-        
+        public Boolean Notify_everyon_rulesChange { get; set; }
+
         public string rules_channel_name { get; set; }
         public string rules { get; set; }
     }

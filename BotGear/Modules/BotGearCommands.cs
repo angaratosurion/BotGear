@@ -85,8 +85,19 @@ namespace BotGear.Modules
                     {
                         var conf = await srvConfmngr.GetServersConfigurationById(serverid);
                         conf.rules = rules;
+                        conf.Notify_everyon_rulesChange = true;
                         await srvConfmngr.EditServerConfiguration(serverid, conf);
                         await ReplyAsync("Rules had been Set");
+                        if ( conf.Notify_everyon_rulesChange==true && String.IsNullOrWhiteSpace(conf.rules_channel_name)==false)
+                        {
+                            var channel = Context.Guild.GetChannelsAsync().Result.First(x => x.Name == conf.rules_channel_name);
+                             if ( channel !=null)
+                            {
+                                await this.Context.Guild.GetTextChannelAsync(channel.Id).Result.SendMessageAsync(rules
+                                    +" "+ Context.Guild.Roles.First(x=>x.Name=="everyone").Mention);
+                            }
+
+                        }
 
                     }
                     else
@@ -148,7 +159,8 @@ namespace BotGear.Modules
                         var conf = await srvConfmngr.GetServersConfigurationById(serverid);
 
 
-                    string text = String.Format("Rules Channel :{0}\n Rules :\n {1}",conf.rules_channel_name,conf.rules);
+                    string text = String.Format("Rules Channel :{0}\n Rules :\n {1}\n\n Notify on Rules Cahnge {2}"
+                        ,conf.rules_channel_name,conf.rules,conf.Notify_everyon_rulesChange);
 
 
                         await ReplyAsync("Server Configuration :: \n " +text);
@@ -162,6 +174,70 @@ namespace BotGear.Modules
 
 
                 
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("setnotifyOnruleson")]
+        [Summary("Enable /Disab;e the notification on Rules changed (type only true or false)")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task setNotificationOnRuleChangeOn()
+        {
+            try
+            {
+              
+                    String serverid = Convert.ToString(this.Context.Guild.Id);
+                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                    {
+                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+                    conf.Notify_everyon_rulesChange = true;
+                       
+                        await srvConfmngr.EditServerConfiguration(serverid, conf);
+                        await ReplyAsync("setting had been Set");
+
+                    }
+                    else
+                    {
+                        await ReplyAsync("use the command set rule channel to create the server config");
+
+                    }
+
+
+                
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("setnotifyOnrulesoff")]
+        [Summary("Enable /Disab;e the notification on Rules changed (type only true or false)")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task setNotificationOnRuleChangeOff()
+        {
+            try
+            {
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+                    conf.Notify_everyon_rulesChange = false;
+
+                    await srvConfmngr.EditServerConfiguration(serverid, conf);
+                    await ReplyAsync("setting had been Set");
+
+                }
+                else
+                {
+                    await ReplyAsync("use the command set rule channel to create the server config");
+
+                }
+
+
+
             }
             catch (Exception ex)
             {
