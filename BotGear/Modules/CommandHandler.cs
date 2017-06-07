@@ -45,7 +45,7 @@ namespace BotGear.Modules
             //_map.Add(commands);
           //  map = _map;
 
-            //await commands.AddModulesAsync(Assembly.GetExecutingAssembly());
+           //await commands.AddModulesAsync(Assembly.GetExecutingAssembly());
             var plugins = BotGearCore.GetAssemblies();
             if (plugins != null)
             {
