@@ -111,21 +111,18 @@ namespace BotGear.Tools.Sankaku.SankakuChannelAPI
                 }
                 catch(System.Net.WebException e1)
                 { 
-                     request = (HttpWebRequest)WebRequest.Create($"https://chan.sankakucomplex.com/?tags={convertedQuery}");
+                     request = (HttpWebRequest)WebRequest.Create($"https://chan.sankakucomplex.com/?tags={convertedQuery}&page={page}");
                     request.Method = "GET";
                     request.Headers.Add("Cache-Control", "max-age=0");
                     request.Headers.Add("Upgrade-Insecure-Requests", "1");
                     request.Host = "chan.sankakucomplex.com";
                     request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36";
-                    //request.UserAgent = String.Format("Mozilla/5.0 (Windows NT {0}; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36"
-                    //    ,Environment.OSVersion.VersionString);
+
 
                     request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
                     request.Headers.Add("Accept-Encoding", "gzip, deflate, sdch, br");
                     request.Headers.Add("Accept-Language", "en-US,en;q=0.8,sl;q=0.6");
-                    //request.Headers.Add("Cookie", $"__cfduid={user.cfduid}; login={user.Username}; pass_hash={user.PasswordHash}; " +
-                    //    $"__atuvc=24%7C43; __atuvs=580cc97684a60c23003; mode=view; auto_page=1; " +
-                    //    $"blacklisted_tags=full-package_futanari&futanari; locale=en; _sankakucomplex_session={user.SankakuComplexSessionID}");
+
                     request.Headers.Add("Cookie", $"atuvc=24%7C43; __atuvs=580cc97684a60c23003; mode=view; auto_page=1; " +
                         $"blacklisted_tags=full-package_futanari&futanari; locale=en");
                     request.UseDefaultCredentials = true;
@@ -254,7 +251,7 @@ namespace BotGear.Tools.Sankaku.SankakuChannelAPI
             try
             {
 
-                var request = (HttpWebRequest)WebRequest.Create(imageLink);
+                var request = (HttpWebRequest)WebRequest.Create(imageLink);//.Substring(0,imageLink.IndexOf('?')));
 
                 request.Host = "cs.sankakucomplex.com";
                 request.Headers.Add("Upgrade-Insecure-Requests", "1");
