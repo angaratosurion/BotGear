@@ -1,0 +1,3 @@
+[submodule "ImageAPIs"]
+	path = ImageAPIs
+	url = https://github.com/RyuaNerin/ImageAPIs
