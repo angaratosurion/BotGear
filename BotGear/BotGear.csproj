@@ -258,10 +258,6 @@
     <Compile Include="Tools\Bakatsuki\BakatsukiClient.cs" />
     <Compile Include="Tools\CommonTools.cs" />
     <Compile Include="Tools\ModuleConverter.cs" />
-    <Compile Include="Tools\SenkakuDownloader\Models\DownloadStats.cs" />
-    <Compile Include="Tools\SenkakuDownloader\SankakuApi\SankakuChannelUser.cs" />
-    <Compile Include="Tools\SenkakuDownloader\SankakuApi\SankakuHttpHandler.cs" />
-    <Compile Include="Tools\SenkakuDownloader\SankakuApi\SankakuPost.cs" />
     <Compile Include="Tools\SenkakuDownloader\SankakuDownloader.cs" />
     <Compile Include="Tools\Wikipedia\WikipediaClient.cs" />
     <Compile Include="Tools\Wikipedia\WikipediaModels.cs" />
@@ -280,7 +276,15 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ImageAPIs\ImageAPIs\ImageAPIs.csproj">
+      <Project>{a758128a-0582-4db8-84e9-9f0d9e57131f}</Project>
+      <Name>ImageAPIs</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tools\SenkakuDownloader\Models\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)x86" md "$(TargetDir)x86"

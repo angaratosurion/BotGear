@@ -142,6 +142,7 @@ namespace ImageAPIs
 
 		internal abstract Uri RequestURL(SearchOption option);
 		internal abstract byte[] RequestBody(SearchOption option);
-		internal abstract IList<ImageInfo> ParseData(string body, SearchOption option);
+        internal abstract IList<ImageInfo> ParseData(string body, SearchOption option);
+        
 	}
 }

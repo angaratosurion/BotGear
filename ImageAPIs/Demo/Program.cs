@@ -9,7 +9,7 @@ namespace ImageAPIsDemo
 {
 	class Program
 	{
-		static SearchImage si = new ImageAPIs.Search.sizebooru();
+		static SearchImage si = new ImageAPIs.Search.Danbooru();
 
 		static void Main(string[] args)
 		{
@@ -28,7 +28,8 @@ namespace ImageAPIsDemo
 
             //todo "http://rule34.booru.org/" <-ok
             //"http://size.booru.org/"
-            IAsyncResult result = si.BeginSearch(new SearchOption(), Callback, 0);
+            SearchOption opt = new SearchOption("rias_gremory");
+            IAsyncResult result = si.BeginSearch(opt, Callback, 0);
 
             Console.ReadLine();
 		}

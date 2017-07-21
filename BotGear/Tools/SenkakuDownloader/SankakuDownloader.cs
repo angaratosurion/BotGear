@@ -1,7 +1,5 @@
 ﻿
-using BotGear.Tools.Sankaku.SankakuChannelAPI;
-using OneRandomImageDownloader.Sankaku.Models;
-
+using ImageAPIs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,20 +12,19 @@ namespace BotGear.Tools.Sankaku
 {
     public class SankakuDownloader
     {
-        public static SankakuChannelUser User= new SankakuChannelUser("" , "");
+        SearchImage sImage = new ImageAPIs.Search.Danbooru();
         public async Task<string> DownloadRandomimage(string charact)
         {
 
             try
             { 
-            int count, rndint=0;
-            double sizeLimit = 0;
-            int pageLimit = 20;
-            int startingPage = 1, pageCount = 1, limit = 20;
+            
             string ap = null;
+                int rndint;
+                
 
 
-            List<SankakuPost> foundPosts = new List<SankakuPost>();
+            List<ImageInfo> foundPosts = new List<ImageInfo>();
                 if (charact != null)
                 {
                     string temp = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Temp");
@@ -36,12 +33,12 @@ namespace BotGear.Tools.Sankaku
                     //    Directory.Delete(temp, true);
                     //}
                     Directory.CreateDirectory(temp);
-                    DownloadStats stats = new DownloadStats();
+                    ImageAPIs.SearchOption sOption = new ImageAPIs.SearchOption(charact);
                     //while (true)
                     {
-                        var list = User.Search(charact, pageCount, limit);
+                        var list  = sImage.Search(sOption);
 
-                        if( list == null || list.Count==1)
+                        if ( list == null || list.Count==1)
                         {
                             return null;
                         }
@@ -50,11 +47,11 @@ namespace BotGear.Tools.Sankaku
                         {
                             // break;
                         }
-                        pageCount++;
+                       
 
 
                     }
-                    stats.PostsFound = foundPosts.Count;
+                   
                     Random rnd = new Random();
                       
                     int max = foundPosts.Count - 1;
@@ -70,20 +67,20 @@ namespace BotGear.Tools.Sankaku
                         rndint = rnd.Next(max);
                    
                    
-                    SankakuPost a = foundPosts[rndint];
+                    var a = foundPosts[rndint];
                     // foreach (var a in foundPosts)
                     {
                         download:
                         try
                         {
-                            var imageLink = a.GetFullImageLink();
+                            var imageLink = a.OrigUrl;
 
-                            var imageLinkShortened = imageLink.Substring(imageLink.LastIndexOf('/') + 1);
+                           var imageLinkShortened = imageLink.Substring(imageLink.LastIndexOf('/') + 1);
                             Match match = new Regex(@"(.*?)(\.[a-z,0-5]{0,5})", RegexOptions.Singleline).Match(imageLinkShortened);
                             var filen = match.Groups[1].Value + match.Groups[2].Value;
                             string filename = temp + "\\" + filen;
-                            var data = a.DownloadFullImage(imageLink, out bool wasRedirected, false, sizeLimit);
-                            File.WriteAllBytes(filename, data);
+                            //var data = a.DownloadFullImage(imageLink, out bool wasRedirected, false, sizeLimit);
+                           // File.WriteAllBytes(filename, data);
                             ap = filename;
 
                         }

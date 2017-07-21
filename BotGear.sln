@@ -1,11 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotGear", "BotGear\BotGear.csproj", "{003CEE66-D4ED-4970-A6BD-27E4B4411520}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotGearBotRunner", "BotGearBotRunner\BotGearBotRunner.csproj", "{B0E24C64-B13A-45CB-A2D2-D0D3ED087EA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageAPIs", "ImageAPIs\ImageAPIs\ImageAPIs.csproj", "{A758128A-0582-4DB8-84E9-9F0D9E57131F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6B1FA55-6E77-4BFF-929E-9EF8573AD6E6}"
+	ProjectSection(SolutionItems) = preProject
+		ImageAPIs\LICENSE = ImageAPIs\LICENSE
+		ImageAPIs\README.md = ImageAPIs\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +29,10 @@ Global
 		{B0E24C64-B13A-45CB-A2D2-D0D3ED087EA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0E24C64-B13A-45CB-A2D2-D0D3ED087EA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0E24C64-B13A-45CB-A2D2-D0D3ED087EA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A758128A-0582-4DB8-84E9-9F0D9E57131F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A758128A-0582-4DB8-84E9-9F0D9E57131F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A758128A-0582-4DB8-84E9-9F0D9E57131F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A758128A-0582-4DB8-84E9-9F0D9E57131F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
