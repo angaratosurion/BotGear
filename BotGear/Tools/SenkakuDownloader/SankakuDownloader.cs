@@ -1,9 +1,11 @@
 ﻿
-using ImageAPIs;
+using FoxBooru;
+using FoxBooru.Models;
+using FoxBooru.Search;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,7 +14,9 @@ namespace BotGear.Tools.Sankaku
 {
     public class SankakuDownloader
     {
-        SearchImage sImage = new ImageAPIs.Search.Danbooru();
+        MultySourceSearch sImage = new FoxBooru.Search.MultySourceSearch();
+
+
         public async Task<string> DownloadRandomimage(string charact)
         {
 
@@ -33,7 +37,8 @@ namespace BotGear.Tools.Sankaku
                     //    Directory.Delete(temp, true);
                     //}
                     Directory.CreateDirectory(temp);
-                    ImageAPIs.SearchOption sOption = new ImageAPIs.SearchOption(charact);
+                    FoxBooru.Models.SearchOption sOption = new FoxBooru.Models.SearchOption(charact);
+                    sOption.Rating = Ratings.All;
                     //while (true)
                     {
                         var list  = sImage.Search(sOption);
@@ -77,10 +82,13 @@ namespace BotGear.Tools.Sankaku
 
                            var imageLinkShortened = imageLink.Substring(imageLink.LastIndexOf('/') + 1);
                             Match match = new Regex(@"(.*?)(\.[a-z,0-5]{0,5})", RegexOptions.Singleline).Match(imageLinkShortened);
-                            var filen = match.Groups[1].Value + match.Groups[2].Value;
+                            var filen = a.md5;//match.Groups[1].Value + match.Groups[2].Value;
+
+                            WebClient client = new WebClient();
+                            var data=client.DownloadData(a.OrigUrl);
                             string filename = temp + "\\" + filen;
                             //var data = a.DownloadFullImage(imageLink, out bool wasRedirected, false, sizeLimit);
-                           // File.WriteAllBytes(filename, data);
+                            File.WriteAllBytes(filename, data);
                             ap = filename;
 
                         }

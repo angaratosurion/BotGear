@@ -277,13 +277,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImageAPIs\ImageAPIs\ImageAPIs.csproj">
-      <Project>{a758128a-0582-4db8-84e9-9f0d9e57131f}</Project>
-      <Name>ImageAPIs</Name>
-    </ProjectReference>
+    <Folder Include="Tools\SenkakuDownloader\Models\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tools\SenkakuDownloader\Models\" />
+    <ProjectReference Include="..\..\FoxBooru\FoxBooru\FoxBooru\FoxBooru.csproj">
+      <Project>{c8ea4efb-0b3b-4fce-973c-0d7e47cc1d90}</Project>
+      <Name>FoxBooru</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
