@@ -258,7 +258,7 @@
     <Compile Include="Tools\Bakatsuki\BakatsukiClient.cs" />
     <Compile Include="Tools\CommonTools.cs" />
     <Compile Include="Tools\ModuleConverter.cs" />
-    <Compile Include="Tools\SenkakuDownloader\SankakuDownloader.cs" />
+    <Compile Include="Tools\ImageDownloader\ImageDownloader.cs" />
     <Compile Include="Tools\Wikipedia\WikipediaClient.cs" />
     <Compile Include="Tools\Wikipedia\WikipediaModels.cs" />
   </ItemGroup>
@@ -277,7 +277,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tools\SenkakuDownloader\Models\" />
+    <Folder Include="Tools\ImageDownloader\Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FoxBooru\FoxBooru\FoxBooru\FoxBooru.csproj">

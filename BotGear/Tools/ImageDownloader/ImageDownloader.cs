@@ -10,9 +10,9 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace BotGear.Tools.Sankaku
+namespace BotGear.Tools.ImageDownloader
 {
-    public class SankakuDownloader
+    public class DanbooruDownloader
     {
         MultySourceSearch sImage = new FoxBooru.Search.MultySourceSearch();
 
@@ -86,7 +86,7 @@ namespace BotGear.Tools.Sankaku
 
                             WebClient client = new WebClient();
                             var data=client.DownloadData(a.OrigUrl);
-                            string filename = temp + "\\" + filen;
+                            string filename = temp + "\\" + filen+"."+ a.OrigUrl.Substring(a.OrigUrl.LastIndexOf("."));
                             //var data = a.DownloadFullImage(imageLink, out bool wasRedirected, false, sizeLimit);
                             File.WriteAllBytes(filename, data);
                             ap = filename;
