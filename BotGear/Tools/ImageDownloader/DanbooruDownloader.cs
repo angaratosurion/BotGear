@@ -86,6 +86,10 @@ namespace BotGear.Tools.ImageDownloader
 
                             WebClient client = new WebClient();
                             var data=client.DownloadData(a.OrigUrl);
+                            if ( filen == null)
+                            {
+                                filen = CommonTools.getHash(data);
+                            }
                             string filename = temp + "\\" + filen+"."+ a.OrigUrl.Substring(a.OrigUrl.LastIndexOf("."));
                             //var data = a.DownloadFullImage(imageLink, out bool wasRedirected, false, sizeLimit);
                             File.WriteAllBytes(filename, data);

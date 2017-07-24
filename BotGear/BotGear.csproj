@@ -258,7 +258,7 @@
     <Compile Include="Tools\Bakatsuki\BakatsukiClient.cs" />
     <Compile Include="Tools\CommonTools.cs" />
     <Compile Include="Tools\ModuleConverter.cs" />
-    <Compile Include="Tools\ImageDownloader\ImageDownloader.cs" />
+    <Compile Include="Tools\ImageDownloader\DanbooruDownloader.cs" />
     <Compile Include="Tools\Wikipedia\WikipediaClient.cs" />
     <Compile Include="Tools\Wikipedia\WikipediaModels.cs" />
   </ItemGroup>
