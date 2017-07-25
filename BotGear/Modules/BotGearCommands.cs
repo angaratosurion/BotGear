@@ -3,6 +3,7 @@ using BotGear.Managers;
 using BotGear.Tools;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -15,7 +16,7 @@ namespace BotGear.Modules
     [Export(typeof(ModuleBase))]
     public class BotGearCommands : ModuleBase
     {
-        ModuleConverter mv = new ModuleConverter(); 
+        ModuleConverter mv = new ModuleConverter();
         ServerManager srvmngr = new ServerManager();
         ServerConfigManager srvConfmngr = new ServerConfigManager();
         [Command("setrulechannel")]
@@ -88,13 +89,13 @@ namespace BotGear.Modules
                         conf.Notify_everyon_rulesChange = true;
                         await srvConfmngr.EditServerConfiguration(serverid, conf);
                         await ReplyAsync("Rules had been Set");
-                        if ( conf.Notify_everyon_rulesChange==true && String.IsNullOrWhiteSpace(conf.rules_channel_name)==false)
+                        if (conf.Notify_everyon_rulesChange == true && String.IsNullOrWhiteSpace(conf.rules_channel_name) == false)
                         {
                             var channel = Context.Guild.GetChannelsAsync().Result.First(x => x.Name == conf.rules_channel_name);
-                             if ( channel !=null)
+                            if (channel != null)
                             {
                                 await this.Context.Guild.GetTextChannelAsync(channel.Id).Result.SendMessageAsync(rules
-                                    +" "+ Context.Guild.Roles.First(x=>x.Name=="everyone").Mention);
+                                    + " " + Context.Guild.Roles.First(x => x.Name == "everyone").Mention);
                             }
 
                         }
@@ -105,7 +106,7 @@ namespace BotGear.Modules
                         await ReplyAsync("use the command set rule channel to create the server config");
 
                     }
-                     
+
 
                 }
             }
@@ -116,28 +117,28 @@ namespace BotGear.Modules
         }
         [Command("rules")]
         [Summary("Sets the rule Chnanel for the server")]
-        public async Task getRules( )
+        public async Task getRules()
         {
             try
             {
-                
-                    String serverid = Convert.ToString(this.Context.Guild.Id);
-                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
-                    {
-                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
 
 
-                        string trules = conf.rules;
+                    string trules = conf.rules;
 
 
-                        await ReplyAsync("Rules : \n "+trules);
+                    await ReplyAsync("Rules : \n " + trules);
 
-                    }
-                    else
-                    {
-                        await ReplyAsync("use the command set rule channel to create the server config");
+                }
+                else
+                {
+                    await ReplyAsync("use the command set rule channel to create the server config");
 
-                    }
+                }
 
 
             }
@@ -148,32 +149,32 @@ namespace BotGear.Modules
         }
         [Command("getServerConf")]
         [Summary("Sets the rule Chnanel for the server")]
-        public async Task getserverConfig( )
+        public async Task getserverConfig()
         {
             try
             {
-                
-                    String serverid = Convert.ToString(this.Context.Guild.Id);
-                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
-                    {
-                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
 
 
                     string text = String.Format("Rules Channel :{0}\n Rules :\n {1}\n\n Notify on Rules Cahnge {2}"
-                        ,conf.rules_channel_name,conf.rules,conf.Notify_everyon_rulesChange);
+                        , conf.rules_channel_name, conf.rules, conf.Notify_everyon_rulesChange);
 
 
-                        await ReplyAsync("Server Configuration :: \n " +text);
+                    await ReplyAsync("Server Configuration :: \n " + text);
 
-                    }
-                    else
-                    {
-                        await ReplyAsync("use the command set rule channel to create the server config");
+                }
+                else
+                {
+                    await ReplyAsync("use the command set rule channel to create the server config");
 
-                    }
+                }
 
 
-                
+
             }
             catch (Exception ex)
             {
@@ -187,25 +188,25 @@ namespace BotGear.Modules
         {
             try
             {
-              
-                    String serverid = Convert.ToString(this.Context.Guild.Id);
-                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
-                    {
-                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
                     conf.Notify_everyon_rulesChange = true;
-                       
-                        await srvConfmngr.EditServerConfiguration(serverid, conf);
-                        await ReplyAsync("setting had been Set");
 
-                    }
-                    else
-                    {
-                        await ReplyAsync("use the command set rule channel to create the server config");
+                    await srvConfmngr.EditServerConfiguration(serverid, conf);
+                    await ReplyAsync("setting had been Set");
 
-                    }
+                }
+                else
+                {
+                    await ReplyAsync("use the command set rule channel to create the server config");
+
+                }
 
 
-                
+
             }
             catch (Exception ex)
             {
@@ -238,6 +239,87 @@ namespace BotGear.Modules
 
 
 
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("Ban")]
+        [Summary("Ban @Username")]
+        [RequireUserPermission(GuildPermission.BanMembers)] ///Needed User Permissions ///
+        [RequireBotPermission(GuildPermission.BanMembers)] ///Needed Bot Permissions ///
+        public async Task BanAsync(SocketGuildUser user = null, [Remainder] string reason = null)
+        {
+            try
+            {
+                if (user == null) { await ReplyAsync("You must mention a user"); }
+                if (string.IsNullOrWhiteSpace(reason))
+                {
+                    await ReplyAsync("You must provide a reason");
+                }
+                    var gld = Context.Guild as SocketGuild;
+                    var embed = new EmbedBuilder(); ///starts embed///
+                    embed.WithColor(new Color(0x4900ff)); ///hexacode colours ///
+                    embed.Title = $"**{user.Username}** was banned";///Who was banned///
+                    embed.Description = $"**Username: **{user.Username}\n**Guild Name: **{user.Guild.Name}\n**Banned by: **{Context.User.Mention}!\n**Reason: **{reason}"; ///Embed values///]
+                 await gld.AddBanAsync(user);///bans selected user///
+                    await Context.Channel.SendMessageAsync("", false, embed);///sends embed///              
+              
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        //[Command("UnBan")]
+        //[Summary("UnBan @Username")]
+        //[RequireUserPermission(GuildPermission.BanMembers)] ///Needed User Permissions ///
+        //[RequireBotPermission(GuildPermission.BanMembers)] ///Needed Bot Permissions ///
+        //public async Task UnBanAsync(SocketGuildUser user = null)
+        //{
+        //    try
+        //    {
+        //        if (user == null) { await ReplyAsync("You must mention a user"); }
+               
+        //        var gld = Context.Guild as SocketGuild;
+        //        var embed = new EmbedBuilder(); ///starts embed///
+        //        embed.WithColor(new Color(0x4900ff)); ///hexacode colours ///
+        //        embed.Title = $"**{user.Username}** was Unbanned";///Who was banned///
+        //        embed.Description = $"**Username: **{user.Username}\n**Guild Name: **{user.Guild.Name}\n**UnBanned by: **{Context.User.Mention}!\n**"; ///Embed values///]
+        //        await gld.RemoveBanAsync(user);///bans selected user///
+        //        await Context.Channel.SendMessageAsync("", false, embed);///sends embed///
+
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        CommonTools.ErrorReporting(ex);
+        //    }
+        //}
+        [Command("Kick")]
+        [RequireBotPermission(GuildPermission.KickMembers)] ///Needed BotPerms///
+        [RequireUserPermission(GuildPermission.KickMembers)] ///Needed User Perms///
+        public async Task KickAsync(SocketGuildUser user, [Remainder] string reason)
+        {
+            try
+            {
+                if (user == null) { await ReplyAsync("You must mention a user"); }
+                if (string.IsNullOrWhiteSpace(reason))
+                {
+                    await ReplyAsync("You must provide a reason");
+                }
+                var gld = Context.Guild as SocketGuild;
+                var embed = new EmbedBuilder(); ///starts embed///
+                embed.WithColor(new Color(0x4900ff)); ///hexacode colours ///
+                embed.Title = $" {user.Username} has been kicked from {user.Guild.Name}"; ///who was kicked///
+                embed.Description = $"**Username: **{user.Username}\n**Guild Name: **{user.Guild.Name}\n**Kicked by: **{Context.User.Mention}!\n**Reason: **{reason}";
+                ///embed values///
+                ///
+                await user.KickAsync(); ///kicks selected user///
+                await Context.Channel.SendMessageAsync("", false, embed); ///sends embed///
             }
             catch (Exception ex)
             {
