@@ -14,5 +14,7 @@ namespace BotGear.Interfaces
          Task Start();
           Task Log(LogMessage arg);
         Task Stop();
+        
+
     }
 }

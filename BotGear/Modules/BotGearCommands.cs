@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace BotGear.Modules
         ModuleConverter mv = new ModuleConverter();
         ServerManager srvmngr = new ServerManager();
         ServerConfigManager srvConfmngr = new ServerConfigManager();
+   
         [Command("setrulechannel")]
         [Summary("Sets the rule Chnanel for the server")]
         [RequireUserPermission(GuildPermission.Administrator)]

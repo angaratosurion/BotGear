@@ -67,29 +67,29 @@ namespace BotGear.Modules
             try
             {
 
-                if (arg1 != null && arg2 !=null)
-                {
-                    if (arg1.Status != arg2.Status && arg1.IsBot==false && arg2.IsBot==false)
-                    {
-                        UserManager usermngr = new UserManager();
-                        if (arg1.Status != Discord.UserStatus.Online && arg2.Status == Discord.UserStatus.Online)
-                        {
-                            var channel = arg2.Guild.DefaultChannel;
-                            if (channel != null)
-                            {
-                                channel.SendMessageAsync(String.Format("Welcome {0}, type !rules to read the rules ", arg2.Mention));
-                            }
-                        }
-                        else if (arg2.Status == Discord.UserStatus.Offline)
-                        {
-                            var channel = arg2.Guild.DefaultChannel;
-                            if (channel != null)
-                            {
-                                channel.SendMessageAsync(String.Format("Bye {0} ", arg2.Mention));
-                            }
-                        }
-                    }
-                }
+                //if (arg1 != null && arg2 !=null)
+                //{
+                //    if (arg1.Status != arg2.Status && arg1.IsBot==false && arg2.IsBot==false)
+                //    {
+                //        UserManager usermngr = new UserManager();
+                //        if (arg1.Status != Discord.UserStatus.Online && arg2.Status == Discord.UserStatus.Online)
+                //        {
+                //            var channel = arg2.Guild.DefaultChannel;
+                //            if (channel != null)
+                //            {
+                //                channel.SendMessageAsync(String.Format("Welcome {0}, type !rules to read the rules ", arg2.Mention));
+                //            }
+                //        }
+                //        else if (arg2.Status == Discord.UserStatus.Offline)
+                //        {
+                //            var channel = arg2.Guild.DefaultChannel;
+                //            if (channel != null)
+                //            {
+                //                channel.SendMessageAsync(String.Format("Bye {0} ", arg2.Mention));
+                //            }
+                //        }
+                //    }
+                //}
 
                  
                 return Task.CompletedTask;
