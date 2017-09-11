@@ -13,6 +13,13 @@
         <member name="M:Discord.Commands.AliasAttribute.#ctor(System.String[])">
             <summary> Creates a new <see cref="T:Discord.Commands.AliasAttribute"/> with the given aliases. </summary>
         </member>
+        <member name="P:Discord.Commands.PreconditionAttribute.Group">
+            <summary>
+            Specify a group that this precondition belongs to. Preconditions of the same group require only one
+            of the preconditions to pass in order to be successful (A || B). Specifying <see cref="P:Discord.Commands.PreconditionAttribute.Group"/> = <see cref="!:null"/>
+            or not at all will require *all* preconditions to pass, just like normal (A &amp;&amp; B).
+            </summary>
+        </member>
         <member name="T:Discord.Commands.RequireBotPermissionAttribute">
             <summary>
             This attribute requires that the bot has a specified permission in the channel a command is invoked in.

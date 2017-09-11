@@ -136,6 +136,21 @@
             <param name="descriptor">The <see cref="T:Microsoft.Extensions.DependencyInjection.ServiceDescriptor"/> to replace with.</param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.RemoveAll``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Removes all services of type <typeparamef name="T"/> in <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+            <param name="collection">The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.RemoveAll(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type)">
+            <summary>
+            Removes all services of type <paramef name="serviceType"/> in <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+            <param name="collection">The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.</param>
+            <param name="serviceType">The service type to remove.</param>
+            <returns></returns>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollection">
             <summary>
             Specifies the contract for a collection of service descriptors.

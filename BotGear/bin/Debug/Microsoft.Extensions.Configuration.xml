@@ -118,12 +118,12 @@
         </member>
         <member name="P:Microsoft.Extensions.Configuration.ConfigurationReloadToken.HasChanged">
             <summary>
-            Gets a value that indicates if a change has occured.
+            Gets a value that indicates if a change has occurred.
             </summary>
         </member>
         <member name="M:Microsoft.Extensions.Configuration.ConfigurationReloadToken.RegisterChangeCallback(System.Action{System.Object},System.Object)">
             <summary>
-            Registers for a callback that will be invoked when the entry has changed. Microsoft.Extensions.Primitives.IChangeToken.HasChanged
+            Registers for a callback that will be invoked when the entry has changed. <see cref="P:Microsoft.Extensions.Primitives.IChangeToken.HasChanged"/>
             MUST be set before the callback is invoked.
             </summary>
             <param name="callback">The callback to invoke.</param>
@@ -145,6 +145,11 @@
             Initializes a Configuration root with a list of providers.
             </summary>
             <param name="providers">The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationProvider"/>s for this configuration.</param>
+        </member>
+        <member name="P:Microsoft.Extensions.Configuration.ConfigurationRoot.Providers">
+            <summary>
+            The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationProvider"/>s for this configuration.
+            </summary>
         </member>
         <member name="P:Microsoft.Extensions.Configuration.ConfigurationRoot.Item(System.String)">
             <summary>

@@ -35,15 +35,11 @@
             <see cref="T:Microsoft.Extensions.FileSystemGlobbing.Abstractions.DirectoryInfoBase" />.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.FileSystemGlobbing.Abstractions.DirectoryInfoWrapper.#ctor(System.IO.DirectoryInfo,System.Boolean)">
+        <member name="M:Microsoft.Extensions.FileSystemGlobbing.Abstractions.DirectoryInfoWrapper.#ctor(System.IO.DirectoryInfo)">
             <summary>
             Initializes an instance of <see cref="T:Microsoft.Extensions.FileSystemGlobbing.Abstractions.DirectoryInfoWrapper" />.
             </summary>
-            <param name="directoryInfo">The <see cref="T:System.IO.DirectoryInfo" /></param>
-            <param name="isParentPath">
-            <c>true</c> when the <paramref name="directoryInfo" /> should be represented as the parent
-            directory with '..'
-            </param>
+            <param name="directoryInfo">The <see cref="T:System.IO.DirectoryInfo" />.</param>
         </member>
         <member name="M:Microsoft.Extensions.FileSystemGlobbing.Abstractions.DirectoryInfoWrapper.EnumerateFileSystemInfos">
             <inheritdoc />

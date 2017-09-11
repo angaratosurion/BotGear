@@ -199,6 +199,11 @@
             Force the configuration values to be reloaded from the underlying <see cref="T:Microsoft.Extensions.Configuration.IConfigurationProvider"/>s.
             </summary>
         </member>
+        <member name="P:Microsoft.Extensions.Configuration.IConfigurationRoot.Providers">
+            <summary>
+            The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationProvider"/>s for this configuration.
+            </summary>
+        </member>
         <member name="T:Microsoft.Extensions.Configuration.IConfigurationSection">
             <summary>
             Represents a section of application configuration values.

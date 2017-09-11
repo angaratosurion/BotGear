@@ -1,5 +1,6 @@
 ﻿using BotGear.Managers;
 using BotGear.Tools;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
@@ -180,7 +181,19 @@ namespace BotGear.Modules
 
             //If the command failed, notify the user
             if (!result.IsSuccess)
-                await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+            {
+
+                // var emote = context.Guild.Emotes.First(x => x.Name == "x");
+                byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
+                var emote = new Emoji("❌");
+                 
+                if (emote != null)
+                {
+                    await message.AddReactionAsync(emote, null);
+                }
+
+                //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+            }
         }
 
     }

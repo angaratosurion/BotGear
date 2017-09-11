@@ -19,10 +19,10 @@
         <member name="M:Discord.Audio.IAudioClient.CreateDirectOpusStream">
             <summary>Creates a new outgoing stream accepting Opus-encoded data. This is a direct stream with no internal timer.</summary>
         </member>
-        <member name="M:Discord.Audio.IAudioClient.CreatePCMStream(Discord.Audio.AudioApplication,System.Nullable{System.Int32},System.Int32)">
+        <member name="M:Discord.Audio.IAudioClient.CreatePCMStream(Discord.Audio.AudioApplication,System.Nullable{System.Int32},System.Int32,System.Int32)">
             <summary>Creates a new outgoing stream accepting PCM (raw) data.</summary>
         </member>
-        <member name="M:Discord.Audio.IAudioClient.CreateDirectPCMStream(Discord.Audio.AudioApplication,System.Nullable{System.Int32})">
+        <member name="M:Discord.Audio.IAudioClient.CreateDirectPCMStream(Discord.Audio.AudioApplication,System.Nullable{System.Int32},System.Int32)">
             <summary>Creates a new direct outgoing stream accepting PCM (raw) data. This is a direct stream with no internal timer.</summary>
         </member>
         <member name="P:Discord.DiscordConfig.DefaultRetryMode">
@@ -161,6 +161,9 @@
         <member name="M:Discord.IMessageChannel.DeleteMessagesAsync(System.Collections.Generic.IEnumerable{Discord.IMessage},Discord.RequestOptions)">
             <summary> Bulk deletes multiple messages. </summary>
         </member>
+        <member name="M:Discord.IMessageChannel.DeleteMessagesAsync(System.Collections.Generic.IEnumerable{System.UInt64},Discord.RequestOptions)">
+            <summary> Bulk deletes multiple messages. </summary>
+        </member>
         <member name="M:Discord.IMessageChannel.TriggerTypingAsync(Discord.RequestOptions)">
             <summary> Broadcasts the "user is typing" message to all users in this channel, lasting 10 seconds. </summary>
         </member>
@@ -214,16 +217,16 @@
             A unicode emoji
             </summary>
         </member>
-        <member name="M:Discord.Emoji.#ctor(System.String)">
-            <summary>
-            Creates a unciode emoji.
-            </summary>
-            <param name="unicode">The pure UTF-8 encoding of an emoji</param>
-        </member>
         <member name="P:Discord.Emoji.Name">
             <summary>
             The unicode representation of this emote.
             </summary>
+        </member>
+        <member name="M:Discord.Emoji.#ctor(System.String)">
+            <summary>
+            Creates a unicode emoji.
+            </summary>
+            <param name="unicode">The pure UTF-8 encoding of an emoji</param>
         </member>
         <member name="T:Discord.Emote">
             <summary>
@@ -447,11 +450,11 @@
         <member name="M:Discord.IGuild.GetBansAsync(Discord.RequestOptions)">
             <summary> Gets a collection of all users banned on this guild. </summary>
         </member>
-        <member name="M:Discord.IGuild.AddBanAsync(Discord.IUser,System.Int32,Discord.RequestOptions)">
+        <member name="M:Discord.IGuild.AddBanAsync(Discord.IUser,System.Int32,System.String,Discord.RequestOptions)">
             <summary> Bans the provided user from this guild and optionally prunes their recent messages. </summary>
             <param name="pruneDays">The number of days to remove messages from this user for - must be between [0, 7]</param>
         </member>
-        <member name="M:Discord.IGuild.AddBanAsync(System.UInt64,System.Int32,Discord.RequestOptions)">
+        <member name="M:Discord.IGuild.AddBanAsync(System.UInt64,System.Int32,System.String,Discord.RequestOptions)">
             <summary> Bans the provided user id from this guild and optionally prunes their recent messages. </summary>
             <param name="pruneDays">The number of days to remove messages from this user for - must be between [0, 7]</param>
         </member>
@@ -547,6 +550,9 @@
         </member>
         <member name="F:Discord.VerificationLevel.High">
             <summary> Users must fulfill the requirements of Medium, and be a member of this guild for at least 10 minutes. </summary>
+        </member>
+        <member name="F:Discord.VerificationLevel.Extreme">
+            <summary> Users must fulfill the requirements of High, and must have a verified phone on their Discord account. </summary>
         </member>
         <member name="M:Discord.IDeletable.DeleteAsync(Discord.RequestOptions)">
             <summary> Deletes this object and all its children. </summary>
@@ -1029,6 +1035,66 @@
         <member name="F:Discord.Color.Default">
             <summary> Gets the default user color value. </summary>
         </member>
+        <member name="F:Discord.Color.Teal">
+            <summary> Gets the teal color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkTeal">
+            <summary> Gets the dark teal color value </summary>
+        </member>
+        <member name="F:Discord.Color.Green">
+            <summary> Gets the green color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkGreen">
+            <summary> Gets the dark green color value </summary>
+        </member>
+        <member name="F:Discord.Color.Blue">
+            <summary> Gets the blue color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkBlue">
+            <summary> Gets the dark blue color value </summary>
+        </member>
+        <member name="F:Discord.Color.Purple">
+            <summary> Gets the purple color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkPurple">
+            <summary> Gets the dark purple color value </summary>
+        </member>
+        <member name="F:Discord.Color.Magenta">
+            <summary> Gets the magenta color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkMagenta">
+            <summary> Gets the dark magenta color value </summary>
+        </member>
+        <member name="F:Discord.Color.Gold">
+            <summary> Gets the gold color value </summary>
+        </member>
+        <member name="F:Discord.Color.LightOrange">
+            <summary> Gets the light orange color value </summary>
+        </member>
+        <member name="F:Discord.Color.Orange">
+            <summary> Gets the orange color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkOrange">
+            <summary> Gets the dark orange color value </summary>
+        </member>
+        <member name="F:Discord.Color.Red">
+            <summary> Gets the red color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkRed">
+            <summary> Gets the dark red color value </summary>
+        </member>
+        <member name="F:Discord.Color.LightGrey">
+            <summary> Gets the light grey color value </summary>
+        </member>
+        <member name="F:Discord.Color.LighterGrey">
+            <summary> Gets the lighter grey color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkGrey">
+            <summary> Gets the dark grey color value </summary>
+        </member>
+        <member name="F:Discord.Color.DarkerGrey">
+            <summary> Gets the darker grey color value </summary>
+        </member>
         <member name="P:Discord.Color.RawValue">
             <summary> Gets the encoded value for this color. </summary>
         </member>
@@ -1227,7 +1293,7 @@
         <member name="M:Discord.IGuildUser.GetPermissions(Discord.IGuildChannel)">
             <summary> Gets the level permissions granted to this user to a given channel. </summary>
         </member>
-        <member name="M:Discord.IGuildUser.KickAsync(Discord.RequestOptions)">
+        <member name="M:Discord.IGuildUser.KickAsync(System.String,Discord.RequestOptions)">
             <summary> Kicks this user from this guild. </summary>
         </member>
         <member name="M:Discord.IGuildUser.ModifyAsync(System.Action{Discord.GuildUserProperties},Discord.RequestOptions)">
@@ -1281,10 +1347,7 @@
         <member name="P:Discord.IUser.Username">
             <summary> Gets the username for this user. </summary>
         </member>
-        <member name="M:Discord.IUser.GetDMChannelAsync(Discord.CacheMode,Discord.RequestOptions)">
-            <summary> Returns a private message channel to this user, creating one if it does not already exist. </summary>
-        </member>
-        <member name="M:Discord.IUser.CreateDMChannelAsync(Discord.RequestOptions)">
+        <member name="M:Discord.IUser.GetOrCreateDMChannelAsync(Discord.RequestOptions)">
             <summary> Returns a private message channel to this user, creating one if it does not already exist. </summary>
         </member>
         <member name="P:Discord.IVoiceState.IsDeafened">
@@ -1354,6 +1417,11 @@
             <summary> 
             The max time, in milliseconds, to wait for this request to complete. If null, a request will not time out. 
             If a rate limit has been triggered for this request's bucket and will not be unpaused in time, this request will fail immediately. 
+            </summary>
+        </member>
+        <member name="P:Discord.RequestOptions.AuditLogReason">
+            <summary>
+            The reason for this action in the guild's audit log
             </summary>
         </member>
         <member name="T:Discord.RetryMode">
