@@ -216,7 +216,7 @@ namespace BotGear.Modules
             }
         }
         [Command("setnotifyOnrulesoff")]
-        [Summary("Enable /Disab;e the notification on Rules changed (type only true or false)")]
+        [Summary("Enable /Disable the notification on Rules changed (type only true or false)")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task setNotificationOnRuleChangeOff()
         {
@@ -327,6 +327,24 @@ namespace BotGear.Modules
             {
                 CommonTools.ErrorReporting(ex);
             }
+        }
+        [Command("restartbot")]
+        [RequireOwner]
+        public async Task restartmethodxd()
+        {
+            try
+            {
+
+
+                await Task.Delay(10000);
+                System.Diagnostics.Process.Start("launch.cmd");
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+
         }
     }
 }
