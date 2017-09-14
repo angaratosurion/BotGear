@@ -392,7 +392,8 @@ namespace BotGear.Modules
             //FFmpeg.exe
             Process ffmpeg = GetFfmpeg(path);
             //Read FFmpeg output
-            using (Stream output = ffmpeg.StandardOutput.BaseStream)
+             using (Stream output = ffmpeg.StandardOutput.BaseStream)
+            //using (Stream output = File.OpenRead(path))
             {
                 using (AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music, 1920))
                 {
@@ -446,6 +447,7 @@ namespace BotGear.Modules
                             // could not send
                         }
                     }
+                    //await output.CopyToAsync(discord);
                     await discord.FlushAsync();
                 }
             }
