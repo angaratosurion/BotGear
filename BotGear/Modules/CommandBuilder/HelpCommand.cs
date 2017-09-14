@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using BotGear.Tools;
+using Discord;
 using Discord.Commands;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace BotGear.Modules.CommandBuilder
     {
         private CommandService _service;
 
-        public HelpCommand (CommandService service)           /* Create a constructor for the commandservice dependency */
+        public HelpCommand(CommandService service)           /* Create a constructor for the commandservice dependency */
         {
             _service = service;
         }
@@ -20,7 +21,7 @@ namespace BotGear.Modules.CommandBuilder
         {
             try
             {
-                
+
                 string prefix = "!";  /* put your chosen prefix here */
                 var builder = new EmbedBuilder()
                 {
@@ -54,10 +55,54 @@ namespace BotGear.Modules.CommandBuilder
                 return builder;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+        }
+        public async Task<EmbedBuilder> Help(ICommandContext Context, string command)
+        {
+            try
+            {
+                var result = _service.Search(Context, command);
+
+                if (!result.IsSuccess)
+                {
+                    await Context.Channel.SendMessageAsync($"Sorry, I couldn't find a command like **{command}**.");
+                    return null;
+                }
+
+                string prefix = "!";
+                var builder = new EmbedBuilder()
+                {
+                    Color = new Color(114, 137, 218),
+                    Description = $"Here are some commands like **{command}**"
+                };
+
+                foreach (var match in result.Commands)
+                {
+                    var cmd = match.Command;
+
+                    builder.AddField(x =>
+                    { 
+                        x.Name = string.Join(", ", cmd.Aliases);
+                        x.Value =$"Summary:{cmd.Summary}\n"+ $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}\n" +
+                                   //$"Permisions :{string.Join(", ", cmd.Preconditions.Select(p => p.ToString()))}\n"+ 
+                                   $"Remarks: {cmd.Remarks}";
+                        x.IsInline = false;
+                    });
+                }
+
+                return builder;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
             }
         }
     }

@@ -255,9 +255,11 @@
     <Compile Include="Modules\BotGearCommands.cs" />
     <Compile Include="Modules\CommandBuilder\HelpCommand.cs" />
     <Compile Include="Modules\CommandHandler.cs" />
+    <Compile Include="Modules\MediaPalyer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\Bakatsuki\BakatsukiClient.cs" />
     <Compile Include="Tools\CommonTools.cs" />
+    <Compile Include="Tools\DownloadHelper.cs" />
     <Compile Include="Tools\ModuleConverter.cs" />
     <Compile Include="Tools\ImageDownloader\DanbooruDownloader.cs" />
     <Compile Include="Tools\Wikipedia\WikipediaClient.cs" />
@@ -288,6 +290,14 @@
       <Project>{c8ea4efb-0b3b-4fce-973c-0d7e47cc1d90}</Project>
       <Name>FoxBooru</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libsodium.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="opus.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
