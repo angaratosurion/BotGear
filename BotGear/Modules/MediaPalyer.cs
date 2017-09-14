@@ -10,6 +10,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -365,7 +366,7 @@ namespace BotGear.Modules
             ProcessStartInfo ffmpeg = new ProcessStartInfo
             {
                 FileName = "ffmpeg",
-                Arguments = $"-xerror -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:0",
+                Arguments = $"-hide_banner -xerror -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:0",
                 UseShellExecute = false,    //TODO: true or false?
                 RedirectStandardOutput = true
             };
@@ -390,13 +391,14 @@ namespace BotGear.Modules
         private async Task SendAudio(string path)
         {
             //FFmpeg.exe
-            //Process ffmpeg = GetFfmpeg(path);
-            
+            Process ffmpeg = GetFfmpeg(path);
+            SoundPlayer player = new SoundPlayer();
             //Read FFmpeg output
-            //using (Stream output = ffmpeg.StandardOutput.BaseStream)
-          using (Stream output = File.OpenRead(path))
+           using (Stream output = ffmpeg.StandardOutput.BaseStream)
+         // using (Stream output = File.OpenRead(path))
             {
-                using (AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music))
+               using (AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music, 96 * 1024))
+               // using (AudioOutStream discord = _audio.CreateOpusStream()) 
                 {
 
                     //Adjust?
