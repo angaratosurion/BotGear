@@ -365,7 +365,7 @@ namespace BotGear.Modules
             ProcessStartInfo ffmpeg = new ProcessStartInfo
             {
                 FileName = "ffmpeg",
-                Arguments = $"-xerror -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
+                Arguments = $"-xerror -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:0",
                 UseShellExecute = false,    //TODO: true or false?
                 RedirectStandardOutput = true
             };
@@ -390,12 +390,13 @@ namespace BotGear.Modules
         private async Task SendAudio(string path)
         {
             //FFmpeg.exe
-            Process ffmpeg = GetFfmpeg(path);
+            //Process ffmpeg = GetFfmpeg(path);
+            
             //Read FFmpeg output
-             using (Stream output = ffmpeg.StandardOutput.BaseStream)
-            //using (Stream output = File.OpenRead(path))
+            //using (Stream output = ffmpeg.StandardOutput.BaseStream)
+          using (Stream output = File.OpenRead(path))
             {
-                using (AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music, 1920))
+                using (AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music))
                 {
 
                     //Adjust?
