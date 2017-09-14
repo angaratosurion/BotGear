@@ -4,6 +4,7 @@ using Discord.Audio;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
+using NReco.VideoConverter;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -17,8 +18,8 @@ using System.Threading.Tasks;
 
 namespace BotGear.Modules
 {
-    [Export(typeof(ModuleBase))]
-    public class MediaPlayer : ModuleBase
+   // [Export(typeof(ModuleBase))]
+    public class MediaPlayer_old : ModuleBase
     {
         
         private IVoiceChannel _voiceChannel;
@@ -31,7 +32,7 @@ namespace BotGear.Modules
          
 
         private Queue<Tuple<string, string, string, string>> _queue;
-        public MediaPlayer()
+        public MediaPlayer_old()
         {
             // _client = Context.Client;
            //_voiceChannel = Context.Guild.GetVoiceChannelsAsync(CacheMode.AllowDownload).Result.FirstOrDefault(x => x.Name.ToLower() == "Music".ToLower());
@@ -63,8 +64,8 @@ namespace BotGear.Modules
 
             new Thread(threadStart).Start(Context);
         }
-        [Command("come",RunMode =RunMode.Async)]
-        [Summary("Comes joins to the channel")]
+        //[Command("come",RunMode =RunMode.Async)]
+        //[Summary("Comes joins to the channel")]
         public async Task Come()
         {
             try
@@ -94,8 +95,8 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
-        [Command("play",RunMode =RunMode.Async)]
-        [Summary("Palys music")]
+        //[Command("play",RunMode =RunMode.Async)]
+        //[Summary("Palys music")]
         public async Task Play()
         {
             try
@@ -110,8 +111,8 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
-        [Command("pause", RunMode = RunMode.Async)]
-        [Summary("Pauses music")]
+        //[Command("pause", RunMode = RunMode.Async)]
+        //[Summary("Pauses music")]
         public async Task PauseCmd()
         {
             try
@@ -126,8 +127,8 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
-        [Command("skip", RunMode = RunMode.Async)]
-        [Summary("Skips to the next song")]
+        //[Command("skip", RunMode = RunMode.Async)]
+        //[Summary("Skips to the next song")]
         public async Task Skipcmd()
         {
             try
@@ -142,8 +143,8 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
-        [Command("Add", RunMode = RunMode.Async)]
-        [Summary("add only a song to play list ")]
+        //[Command("Add", RunMode = RunMode.Async)]
+        //[Summary("add only a song to play list ")]
         public async Task Add(string parameter)
         {
             try
@@ -194,8 +195,8 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
-        [Command("Addplaylist", RunMode = RunMode.Async)]
-        [Summary("add a palylist to the queque")]
+        //[Command("Addplaylist", RunMode = RunMode.Async)]
+        //[Summary("add a palylist to the queque")]
         public async Task AddPlaylist(string parameter)
         {
             try
@@ -249,8 +250,8 @@ namespace BotGear.Modules
             }
 
         }
-        [Command("clear", RunMode = RunMode.Async)]
-        [Summary("Clears the queque")]
+        //[Command("clear", RunMode = RunMode.Async)]
+        //[Summary("Clears the queque")]
         public async Task Clear()
         {
             try
@@ -265,8 +266,8 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
-        [Command("queue", RunMode = RunMode.Async)]
-        [Summary("Shows  the queue")]
+        //[Command("queue", RunMode = RunMode.Async)]
+        //[Summary("Shows  the queue")]
         public async Task Queue()
         {
             try
@@ -366,7 +367,7 @@ namespace BotGear.Modules
             ProcessStartInfo ffmpeg = new ProcessStartInfo
             {
                 FileName = "ffmpeg",
-                Arguments = $"-hide_banner -xerror -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:0",
+                Arguments = $"-hide_banner -xerror -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
                 UseShellExecute = false,    //TODO: true or false?
                 RedirectStandardOutput = true
             };
@@ -391,13 +392,17 @@ namespace BotGear.Modules
         private async Task SendAudio(string path)
         {
             //FFmpeg.exe
-            Process ffmpeg = GetFfmpeg(path);
-            SoundPlayer player = new SoundPlayer();
+            //Process ffmpeg = GetFfmpeg(path);
+            
             //Read FFmpeg output
-           using (Stream output = ffmpeg.StandardOutput.BaseStream)
+            //Stream output = ffmpeg.StandardOutput.BaseStream)
+            var ffMpeg = new FFMpegConverter();
+            Stream output = new MemoryStream() ;
+            ffMpeg.ConvertMedia(path, output, NReco.VideoConverter.Format.raw_data);
+            
          // using (Stream output = File.OpenRead(path))
             {
-               using (AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music, 96 * 1024))
+                AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music);//, 96 * 1024))
                // using (AudioOutStream discord = _audio.CreateOpusStream()) 
                 {
 
