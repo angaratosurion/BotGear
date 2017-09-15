@@ -17,7 +17,8 @@ namespace BotGear.Modules
     {
         IVoiceChannel channel;
         IAudioClient client;
-        private static  Queue<Tuple<string, string, string, string>> _queue = new Queue<Tuple<string, string, string, string>>();
+        private static  Queue<Tuple<string, string, string, string,ulong>> _queue = new Queue<Tuple<string, string, string, string,ulong>();
+        private static Dictionary<ulong, int> CurrentSong = new Dictionary<ulong, int>();
         private Process CreateStream(string url)
         {
             try
@@ -102,7 +103,7 @@ namespace BotGear.Modules
                
                     if (_queue.Count > 0)
                     {
-                        var song = _queue.Peek();
+                    var song = _queue.First(x => x.Item5 == Context.Guild.Id);
                         await this.Play(song.Item1);
 
                     }
@@ -174,7 +175,7 @@ namespace BotGear.Modules
 
                         Tuple<string, string> info = await DownloadHelper.GetInfo(url);
                         await Context.Channel.SendMessageAsync($"{Context.User.Mention} requested \"{info.Item1}\" ({info.Item2})! Downloading now...");
-                        var vidInfo = new Tuple<string, string, string, string>(url, info.Item1, info.Item2, Context.User.Mention);
+                        var vidInfo = new Tuple<string, string, string, string,ulong>(url, info.Item1, info.Item2, Context.User.Mention,Context.Guild.Id);
 
                         _queue.Enqueue(vidInfo);
 
@@ -198,10 +199,21 @@ namespace BotGear.Modules
         {
             try
             {
-               // Pause = true;
-                _queue.Clear();
-                await Context.Channel.SendMessageAsync(
-                           $"{Context.User.Mention}cleared the Playlist!");
+                // Pause = true;
+                var songs=_queue.Where(x=>x.Item5==Context.Guild.Id).ToList();
+                if (songs != null)
+                {
+
+                    //foreach(var q in songs)
+                    //{
+
+                    _queue.SkipWhile(x => x.Item5 == Context.Guild.Id);
+
+
+                    //}
+                    await Context.Channel.SendMessageAsync(
+                               $"{Context.User.Mention}cleared the Playlist!");
+                }
             }
             catch (Exception ex)
             {
@@ -261,14 +273,14 @@ namespace BotGear.Modules
                 //Color = Pause ? new Color(244, 67, 54) /*Red*/ : new Color(00, 99, 33) /*Green*/
             };
             //builder.ThumbnailUrl = "some cool url";
-
-            if (_queue.Count == 0)
+             var songs = _queue.Where(x => x.Item5 == Context.Guild.Id).ToList();
+            if (songs!=null &&songs.Count == 0)
             {
                 await tchannel.SendMessageAsync("Sorry, Song Queue is empty! Add some songs with the `!add [url]` command!");
             }
             else
             {
-                foreach (Tuple<string, string, string, string> song in _queue)
+                foreach (Tuple<string, string, string, string,ulong> song in songs)
                 {
                     builder.AddField($"{song.Item2} ({song.Item3})", $"by {song.Item4}");
                 }
@@ -276,5 +288,23 @@ namespace BotGear.Modules
                 await tchannel.SendMessageAsync("", embed: builder.Build());
             }
         }
+
+        private async Task GetNextSong()
+        {
+            try
+            {
+                var songs = _queue.Where(x => x.Item5 == Context.Guild.Id).ToList();
+               if ( songs!=null)
+                {
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+
     }
 }
