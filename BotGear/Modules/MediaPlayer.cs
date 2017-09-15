@@ -17,8 +17,9 @@ namespace BotGear.Modules
     {
         IVoiceChannel channel;
         IAudioClient client;
-        private static  Queue<Tuple<string, string, string, string,ulong>> _queue = new Queue<Tuple<string, string, string, string,ulong>();
-        private static Dictionary<ulong, int> CurrentSong = new Dictionary<ulong, int>();
+        private static  Queue<Tuple<string, string, string, string,ulong>> _queue = new Queue<Tuple<string, string, string, string,ulong>>();
+        private static Dictionary<ulong, string> CurrentSong = new Dictionary<ulong, string>();
+        private static Dictionary<ulong, Process> FfmpegInstancces = new Dictionary<ulong, Process>();
         private Process CreateStream(string url)
         {
             try
@@ -35,6 +36,7 @@ namespace BotGear.Modules
                 };
 
                 currentsong.Start();
+                FfmpegInstancces.Add(Context.Guild.Id, currentsong);
                 return currentsong;
             }
             catch (Exception ex)
@@ -122,33 +124,37 @@ namespace BotGear.Modules
         {
             try
             { 
-                Process killffmpeg = new Process();
+                //Process killffmpeg = new Process();
 
 
-                killffmpeg.StartInfo = new ProcessStartInfo
+                //killffmpeg.StartInfo = new ProcessStartInfo
+                //{
+                //    FileName = "taskkill",
+                //    Arguments = $"/f /im \"ffmpeg.exe\"",
+                //   UseShellExecute = false,
+                //  RedirectStandardOutput = true,
+                //    CreateNoWindow = true
+                //};
+                //killffmpeg.Start();
+
+
+
+
+                //Process killyoutubedll = new Process();
+                //killyoutubedll.StartInfo = new ProcessStartInfo
+                //{
+                //    FileName = "taskkill",
+                //    Arguments = $"/f /im \"youtube-dl.exe\"",
+                //   UseShellExecute = false,
+                //    RedirectStandardOutput = true,
+                //    CreateNoWindow = true
+                //};
+                //killyoutubedll.Start();
+                if ((await this.CheckIfFFmpegexists(Context.Guild.Id)) == true)
                 {
-                    FileName = "taskkill",
-                    Arguments = $"/f /im \"ffmpeg.exe\"",
-                   UseShellExecute = false,
-                  RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                };
-                killffmpeg.Start();
-
-
-
-
-                Process killyoutubedll = new Process();
-                killyoutubedll.StartInfo = new ProcessStartInfo
-                {
-                    FileName = "taskkill",
-                    Arguments = $"/f /im \"youtube-dl.exe\"",
-                   UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                };
-                killyoutubedll.Start();
-                
+                    FfmpegInstancces[Context.Guild.Id].Kill();
+                }
+                   
 
                 await this.Clear();
             }
@@ -252,6 +258,7 @@ namespace BotGear.Modules
                     await Context.Channel.SendMessageAsync($"Now playing: **{song.Item2}** ({song.Item3})");
 
                     await this.Play(song.Item1);
+                   
 
                 }
                 
@@ -289,20 +296,42 @@ namespace BotGear.Modules
             }
         }
 
-        private async Task GetNextSong()
+        private async Task<Tuple<string, string, string, string,ulong>> GetNextSong( )
         {
             try
             {
-                var songs = _queue.Where(x => x.Item5 == Context.Guild.Id).ToList();
+                Tuple<string, string, string, string, ulong> ap = null;
+                var quarr = _queue.ToArray();
+                var songs = quarr.Where(x => x.Item5 == Context.Guild.Id).ToList();
                if ( songs!=null)
                 {
-                    
+                    songs.FindIndex(x=>x.Item1==CurrentSong[Context.Guild.Id]);   
                 }
+                return ap;
             }
             catch (Exception ex)
             {
 
                 CommonTools.ErrorReporting(ex);
+                return null;
+            }
+        }
+        private async Task<Boolean> CheckIfFFmpegexists(ulong guildid)
+        {
+            try
+            {
+                Boolean a = false;
+                
+                
+                    a = FfmpegInstancces.ContainsKey(guildid);
+               
+                return a;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return false;
             }
         }
 
