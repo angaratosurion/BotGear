@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -167,6 +168,7 @@ namespace BotGear.Modules
         }
         [Command("stop", RunMode = RunMode.Async)]
         [Summary("Stops the  Music")]
+        [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
         public async Task Stop()
         {
             try
@@ -205,6 +207,7 @@ namespace BotGear.Modules
                 {
                     var x=await GetMusicThreadInstance(Context.Guild.Id);
                     x.Abort();
+                    
                 }
                    
 
