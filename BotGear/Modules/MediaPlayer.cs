@@ -73,15 +73,15 @@ namespace BotGear.Modules
                     output.CopyToAsync(stream);
                     stream.FlushAsync().ConfigureAwait(false);
                 }
-                else
-                {
-                    if (_queue.Count > 0)
-                    {
-                        var song = _queue[0];
-                        await this.Play(song.Item1);
+                //else
+                //{
+                //    if (_queue.Count > 0)
+                //    {
+                //        var song = _queue[0];
+                //        await this.Play(song.Item1);
 
-                    }
-                }
+                //    }
+                //}
 
             }
             catch (Exception ex)
@@ -331,7 +331,7 @@ namespace BotGear.Modules
 
 
 
-        public void  MediaPlayCont()
+        public async void  MediaPlayCont()
         {
             try
             {
@@ -344,8 +344,8 @@ namespace BotGear.Modules
                         {
                             if (this.CheckIfFFmpegexists(Context.Guild.Id).Result != true)
                             {
-
-                                 this.Play(song.Item1);
+                            await Context.Channel.SendMessageAsync($"Now playing: **{song.Item2}** ({song.Item3})");
+                            this.Play(song.Item1);
                                 if (CurrentSong.ContainsKey(Context.Guild.Id) != true)
                                 {
                                     CurrentSong.Add(Context.Guild.Id, song.Item1);
@@ -363,7 +363,8 @@ namespace BotGear.Modules
 
                                 // Thread.Sleep((int)spn.TotalMilliseconds);
                                 ( this.GetFFmpegInstance(Context.Guild.Id)).Result.WaitForExit();
-                                  this.Play(song.Item1);
+                            await Context.Channel.SendMessageAsync($"Now playing: **{song.Item2}** ({song.Item3})");
+                            await this.Play(song.Item1);
                                 if (CurrentSong.ContainsKey(Context.Guild.Id) != true)
                                 {
                                     CurrentSong.Add(Context.Guild.Id, song.Item1);
