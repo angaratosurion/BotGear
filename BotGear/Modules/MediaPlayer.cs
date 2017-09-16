@@ -8,6 +8,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BotGear.Modules
@@ -17,9 +18,10 @@ namespace BotGear.Modules
     {
         IVoiceChannel channel;
         IAudioClient client;
-        private static  Queue<Tuple<string, string, string, string,ulong>> _queue = new Queue<Tuple<string, string, string, string,ulong>>();
+        private static  List<Tuple<string, string, string, string,ulong,int>> _queue = new List<Tuple<string, string, string, string,ulong,int>>();
         private static Dictionary<ulong, string> CurrentSong = new Dictionary<ulong, string>();
         private static Dictionary<ulong, Process> FfmpegInstancces = new Dictionary<ulong, Process>();
+        private static Dictionary<ulong, Thread> Musicthreads = new Dictionary<ulong, Thread>();
         private Process CreateStream(string url)
         {
             try
@@ -75,7 +77,7 @@ namespace BotGear.Modules
                 {
                     if (_queue.Count > 0)
                     {
-                        var song = _queue.Peek();
+                        var song = _queue[0];
                         await this.Play(song.Item1);
 
                     }
@@ -89,8 +91,8 @@ namespace BotGear.Modules
             }
         }
         [Command("play", RunMode = RunMode.Async)]
-        [Summary("Plays Music")]
-        public async Task Play()
+        [Summary("Plays Music without adding song to queque")]
+        public async Task PlayCont()
         {
             try
             {
@@ -102,13 +104,58 @@ namespace BotGear.Modules
                     return;
 
                 }
-               
-                    if (_queue.Count > 0)
-                    {
-                    var song = _queue.First(x => x.Item5 == Context.Guild.Id);
-                        await this.Play(song.Item1);
+                if (!(await this.CheckIfMusicthreadExistsexists(Context.Guild.Id)))
+                {
+                    ThreadStart threadStart = new ThreadStart(this.MediaPlayCont);
+                 var thr =   new Thread(threadStart);
+                    thr.Start();
+                    Musicthreads.Add(Context.Guild.Id, thr);
 
-                    }
+                }
+                //var songs = await this.GetServerQueue();
+                               
+                //   if (songs != null && songs.Count > 0)
+                //{
+                //    foreach (var song in songs)
+                //    {
+                //        if (await this.CheckIfFFmpegexists(Context.Guild.Id) != true)
+                //        {
+
+                //            await this.Play(song.Item1);
+                //            if (CurrentSong.ContainsKey(Context.Guild.Id) != true)
+                //            {
+                //                CurrentSong.Add(Context.Guild.Id, song.Item1);
+                //            }
+                //            else
+                //            {
+                //                CurrentSong[Context.Guild.Id] = song.Item1;
+                //            }
+
+
+                //        }
+                //        else
+                //        {
+                //            //TimeSpan spn = TimeSpan.Parse(song.Item3);
+
+                //            // Thread.Sleep((int)spn.TotalMilliseconds);
+                //            (await this.GetFFmpegInstance(Context.Guild.Id)).WaitForExit();
+                //            await this.Play(song.Item1);
+                //            if (CurrentSong.ContainsKey(Context.Guild.Id) != true)
+                //            {
+                //                CurrentSong.Add(Context.Guild.Id, song.Item1);
+                //            }
+                //            else
+                //            {
+                //                CurrentSong[Context.Guild.Id] = song.Item1;
+                //            }
+                //        }
+
+
+
+                //    }
+
+                //}
+         
                
 
             }
@@ -154,6 +201,11 @@ namespace BotGear.Modules
                 {
                     FfmpegInstancces[Context.Guild.Id].Kill();
                 }
+                if (await CheckIfMusicthreadExistsexists(Context.Guild.Id))
+                {
+                    var x=await GetMusicThreadInstance(Context.Guild.Id);
+                    x.Abort();
+                }
                    
 
                 await this.Clear();
@@ -181,9 +233,15 @@ namespace BotGear.Modules
 
                         Tuple<string, string> info = await DownloadHelper.GetInfo(url);
                         await Context.Channel.SendMessageAsync($"{Context.User.Mention} requested \"{info.Item1}\" ({info.Item2})! Downloading now...");
-                        var vidInfo = new Tuple<string, string, string, string,ulong>(url, info.Item1, info.Item2, Context.User.Mention,Context.Guild.Id);
+                        int index = _queue.Count - 1;
+                        if ( index<0)
+                        {
+                            index = 0;
+                        }
+                        var vidInfo = new Tuple<string, string, string, string,ulong,int>(url, info.Item1, info.Item2, Context.User.Mention,Context.Guild.Id,index);
 
-                        _queue.Enqueue(vidInfo);
+                        _queue.Add(vidInfo);
+                       await  this.PlayCont();
 
                         //Download
 
@@ -247,14 +305,15 @@ namespace BotGear.Modules
         {
             try
             {
-                await Context.Channel.SendMessageAsync($"{Context.User.Mention} skipped **{_queue.Peek().Item2}**!");
+                var cur =await this.GetCurrentSong();
+                await Context.Channel.SendMessageAsync($"{Context.User.Mention} skipped **{cur.Item2}**!");
                 if (channel!=null )
                 {
                     if(_queue.Count==0)
                     {
 
                     }
-                    var song = _queue.Peek();
+                    var song = await this.GetNextSong();
                     await Context.Channel.SendMessageAsync($"Now playing: **{song.Item2}** ({song.Item3})");
 
                     await this.Play(song.Item1);
@@ -270,6 +329,67 @@ namespace BotGear.Modules
             }
         }
 
+
+
+        public void  MediaPlayCont()
+        {
+            try
+            {
+                var songs =  this.GetServerQueue().Result;
+               
+                    if (songs != null && songs.Count > 0)
+                    {
+                    var song = songs[0];
+                        while (song !=null)
+                        {
+                            if (this.CheckIfFFmpegexists(Context.Guild.Id).Result != true)
+                            {
+
+                                 this.Play(song.Item1);
+                                if (CurrentSong.ContainsKey(Context.Guild.Id) != true)
+                                {
+                                    CurrentSong.Add(Context.Guild.Id, song.Item1);
+                                }
+                                else
+                                {
+                                    CurrentSong[Context.Guild.Id] = song.Item1;
+                                }
+
+
+                            }
+                            else
+                            {
+                                //TimeSpan spn = TimeSpan.Parse(song.Item3);
+
+                                // Thread.Sleep((int)spn.TotalMilliseconds);
+                                ( this.GetFFmpegInstance(Context.Guild.Id)).Result.WaitForExit();
+                                  this.Play(song.Item1);
+                                if (CurrentSong.ContainsKey(Context.Guild.Id) != true)
+                                {
+                                    CurrentSong.Add(Context.Guild.Id, song.Item1);
+                                }
+                                else
+                                {
+                                    CurrentSong[Context.Guild.Id] = song.Item1;
+                                }
+                            }
+                        song = this.GetNextSong().Result;
+
+
+
+                        }
+
+                    }
+                
+
+
+            }
+            catch (Exception ex)
+            {
+                BotGear.Tools.CommonTools.ErrorReporting(ex);
+                //await Context.Channel.SendMessageAsync(ex.ToString());
+            }
+        }
         private async Task SendQueue(IMessageChannel tchannel)
         {
             EmbedBuilder builder = new EmbedBuilder()
@@ -280,14 +400,14 @@ namespace BotGear.Modules
                 //Color = Pause ? new Color(244, 67, 54) /*Red*/ : new Color(00, 99, 33) /*Green*/
             };
             //builder.ThumbnailUrl = "some cool url";
-             var songs = _queue.Where(x => x.Item5 == Context.Guild.Id).ToList();
+            var songs = await  this.GetServerQueue();
             if (songs!=null &&songs.Count == 0)
             {
                 await tchannel.SendMessageAsync("Sorry, Song Queue is empty! Add some songs with the `!add [url]` command!");
             }
             else
             {
-                foreach (Tuple<string, string, string, string,ulong> song in songs)
+                foreach (Tuple<string, string, string, string,ulong,int> song in songs)
                 {
                     builder.AddField($"{song.Item2} ({song.Item3})", $"by {song.Item4}");
                 }
@@ -295,17 +415,46 @@ namespace BotGear.Modules
                 await tchannel.SendMessageAsync("", embed: builder.Build());
             }
         }
-
-        private async Task<Tuple<string, string, string, string,ulong>> GetNextSong( )
+        private async Task<List<Tuple<string, string, string, string, ulong,int>>> GetServerQueue()
         {
             try
             {
-                Tuple<string, string, string, string, ulong> ap = null;
+                List < Tuple<string, string,string, string,ulong,int >>ap = null;
+
+                if(_queue !=null)
+                {
+                    ap = _queue.FindAll(x => x.Item5 == Context.Guild.Id);
+                }
+
+                return ap;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+        }
+
+        private async Task<Tuple<string, string, string, string,ulong,int >> GetNextSong( )
+        {
+            try
+            {
+                Tuple<string, string, string, string, ulong,int> ap = null;
                 var quarr = _queue.ToArray();
-                var songs = quarr.Where(x => x.Item5 == Context.Guild.Id).ToList();
+                var songs = await GetServerQueue();
                if ( songs!=null)
                 {
-                    songs.FindIndex(x=>x.Item1==CurrentSong[Context.Guild.Id]);   
+                    int i = -1;
+                    var cur = await this.GetCurrentSong();
+                    i = cur.Item6 ;
+                    if ( i>-1 &&(i+1)<_queue.Count)
+                    {
+                        ap = _queue[i+1];
+                    }
+
+                    //songs.FindIndex(x=>x.Item1==CurrentSong[Context.Guild.Id]);   
                 }
                 return ap;
             }
@@ -332,6 +481,88 @@ namespace BotGear.Modules
 
                 CommonTools.ErrorReporting(ex);
                 return false;
+            }
+        }
+        
+        private async Task<Process> GetFFmpegInstance(ulong guildid)
+        {
+            try
+            {
+                Process a = null;
+
+
+                if (await this.CheckIfFFmpegexists(Context.Guild.Id))
+                {
+                    a = FfmpegInstancces[Context.Guild.Id];
+                }
+
+                return a;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+        }
+        private async Task<Boolean> CheckIfMusicthreadExistsexists(ulong guildid)
+        {
+            try
+            {
+                Boolean a = false;
+
+
+                a = Musicthreads.ContainsKey(guildid);
+
+                return a;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return false;
+            }
+        }
+        private async Task<Thread> GetMusicThreadInstance(ulong guildid)
+        {
+            try
+            {
+                Thread a = null;
+
+
+                if (await this.CheckIfMusicthreadExistsexists(Context.Guild.Id))
+                {
+                    a = Musicthreads[Context.Guild.Id];
+                }
+
+                return a;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
+            }
+        }
+        private async Task<Tuple<string, string, string, string, ulong,int>> GetCurrentSong()
+        {
+            try
+            {
+                Tuple<string, string, string, string, ulong,int> ap = null;
+                
+                var songs = await this.GetServerQueue();
+                if (songs != null && CurrentSong.ContainsKey(Context.Guild.Id)==true)
+                {
+                    ap = songs.First(x => x.Item1 == CurrentSong[Context.Guild.Id]);
+                    //songs.FindIndex(x=>x.Item1==CurrentSong[Context.Guild.Id]);   
+                }
+                return ap;
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
             }
         }
 
