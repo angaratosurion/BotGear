@@ -73,6 +73,7 @@ namespace BotGear.Modules
                     var stream = client.CreatePCMStream(AudioApplication.Music, 64 * 1024);
                     output.CopyToAsync(stream);
                     stream.FlushAsync().ConfigureAwait(false);
+                    
                 }
                 //else
                 //{
@@ -207,8 +208,10 @@ namespace BotGear.Modules
                 {
                     var x=await GetMusicThreadInstance(Context.Guild.Id);
                     x.Abort();
+                    Musicthreads.Remove(Context.Guild.Id);
                     
                 }
+
                    
 
                 await this.Clear();
@@ -343,7 +346,7 @@ namespace BotGear.Modules
                     if (songs != null && songs.Count > 0)
                     {
                     var song = songs[0];
-                        while (song !=null)
+                        while (song !=null )
                         {
                             if (this.CheckIfFFmpegexists(Context.Guild.Id).Result != true)
                             {
