@@ -20,11 +20,10 @@ namespace BotGear.Modules
 {
    // [Export(typeof(ModuleBase))]
     public class MediaPlayer_old : ModuleBase
-    {
-        
+    { 
         private IVoiceChannel _voiceChannel;
         private static  ITextChannel _textChannel;
-        private readonly Queue<Tuple<string, string, string, string>> queue;
+        private static  Queue<Tuple<string, string, string, string>> queue;
         private TaskCompletionSource<bool> _tcs;
         private CancellationTokenSource _disposeToken;
         private IAudioClient _audio;
@@ -64,7 +63,7 @@ namespace BotGear.Modules
 
             new Thread(threadStart).Start(Context);
         }
-        //[Command("come",RunMode =RunMode.Async)]
+        //[Command("come", RunMode = RunMode.Async)]
         //[Summary("Comes joins to the channel")]
         public async Task Come()
         {
@@ -95,7 +94,7 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
-        //[Command("play",RunMode =RunMode.Async)]
+        //[Command("play", RunMode = RunMode.Async)]
         //[Summary("Palys music")]
         public async Task Play()
         {
@@ -167,8 +166,8 @@ namespace BotGear.Modules
                                 await SendMessage($"{Context.User.Mention} requested \"{info.Item1}\" ({info.Item2})! Downloading now..." );
 
                                 //Download
-                                string file = await DownloadHelper.Download(parameter);
-                                var vidInfo = new Tuple<string, string, string, string>(file, info.Item1, info.Item2, Context.User.Mention);
+                                 
+                                var vidInfo = new Tuple<string, string, string, string>(parameter, info.Item1, info.Item2, Context.User.Mention);
 
                                 _queue.Enqueue(vidInfo);
                                 Pause = false;
@@ -347,119 +346,84 @@ namespace BotGear.Modules
             }
         }
 
-       
+
 
         //Dispose this Object (Async)
-       
+
 
         //Refresh Status of DiscordClient
-     
+
         #endregion
 
-       
+
 
         #region Audio
+        private static Process CreateStream(string url)
+        {
+            try
+            {
+                Process currentsong = new Process();
+
+                currentsong.StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/C youtube-dl.exe -o - {url} | ffmpeg -i pipe:0 -ac 2 -f s16le -ar 48000 pipe:1",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                };
+
+                currentsong.Start();
+               // FfmpegInstancces.Add(Context.Guild.Id, currentsong);
+                return currentsong;
+            }
+            catch (Exception ex)
+            {
+                BotGear.Tools.CommonTools.ErrorReporting(ex);
+                // Context.Channel.SendMessageAsync(ex.ToString());
+                return null;
+            }
+        }
         //Audio: PCM | 48000hz | mp3
 
         //Get ffmpeg Audio Procecss
-        private static Process GetFfmpeg(string path)
-        {
-            ProcessStartInfo ffmpeg = new ProcessStartInfo
-            {
-                FileName = "ffmpeg",
-                Arguments = $"-hide_banner -xerror -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
-                UseShellExecute = false,    //TODO: true or false?
-                RedirectStandardOutput = true
-            };
-            return Process.Start(ffmpeg);
-        }
-
-        //Get ffplay Audio Procecss
-        private static Process GetFfplay(string path)
-        {
-            ProcessStartInfo ffplay = new ProcessStartInfo
-            {
-                FileName = "ffplay",
-                Arguments = $"-i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1 -autoexit",
-                UseShellExecute = false ,   //TODO: true or false?
-                RedirectStandardOutput = true
-            };
-
-            return new Process { StartInfo = ffplay };
-        }
+       
 
         //Send Audio with ffmpeg
-        private async Task SendAudio(string path)
+        private async Task SendAudio(string url)
         {
-            //FFmpeg.exe
-            //Process ffmpeg = GetFfmpeg(path);
-            
-            //Read FFmpeg output
-            //Stream output = ffmpeg.StandardOutput.BaseStream)
-            var ffMpeg = new FFMpegConverter();
-            Stream output = new MemoryStream() ;
-            ffMpeg.ConvertMedia(path, output, NReco.VideoConverter.Format.raw_data);
-            
-         // using (Stream output = File.OpenRead(path))
+
+            try
             {
-                AudioOutStream discord = _audio.CreatePCMStream(AudioApplication.Music);//, 96 * 1024))
-               // using (AudioOutStream discord = _audio.CreateOpusStream()) 
+                var channel = Context.Guild.GetVoiceChannelsAsync(CacheMode.AllowDownload).Result.FirstOrDefault(x => x.Name.ToLower() == "Music".ToLower());
+
+                if (channel == null)
                 {
+                    await Context.Channel.SendMessageAsync("Create a Voice Channel with the name Music");
+                    return;
 
-                    //Adjust?
-                    int bufferSize = 1024;
-                    int bytesSent = 0;
-                    bool fail = false;
-                    bool exit = false;
-                    byte[] buffer = new byte[bufferSize];
+                }
+                _voiceChannel = channel;
+                if (url != null)
+                {
+                    //(Context.User as IVoiceState).VoiceChannel;
+                    _audio = await channel.ConnectAsync();
 
-                    while (
-                        !Skip &&                                    // If Skip is set to true, stop sending and set back to false (with getter)
-                        !fail &&                                    // After a failed attempt, stop sending
-                        !_disposeToken.IsCancellationRequested &&   // On Cancel/Dispose requested, stop sending
-                        !exit                                       // Audio Playback has ended (No more data from FFmpeg.exe)
-                            )
-                    {
-                        try
-                        {
-                            int read = await output.ReadAsync(buffer, 0, bufferSize, _disposeToken.Token);
-                            if (read == 0)
-                            {
-                                //No more data available
-                                exit = true;
-                                break;
-                            }
 
-                            await discord.WriteAsync(buffer, 0, read, _disposeToken.Token);
+                    var output = CreateStream(url).StandardOutput.BaseStream;
+                    var stream = _audio.CreatePCMStream(AudioApplication.Music, 64 * 1024);
+                    output.CopyToAsync(stream);
+                    stream.FlushAsync().ConfigureAwait(false);
 
-                            if (Pause)
-                            {
-                                bool pauseAgain;
-
-                                do
-                                {
-                                    pauseAgain = await _tcs.Task;
-                                    _tcs = new TaskCompletionSource<bool>();
-                                } while (pauseAgain);
-                            }
-
-                            bytesSent += read;
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            exit = true;
-                        }
-                        catch
-                        {
-                            fail = true;
-                            // could not send
-                        }
-                    }
-                    //await output.CopyToAsync(discord);
-                    await discord.FlushAsync();
                 }
             }
+            catch (Exception ex)
+            {
+                BotGear.Tools.CommonTools.ErrorReporting(ex);
+                //await Context.Channel.SendMessageAsync(ex.ToString());
+            }
         }
+        
 
         //Looped Music Play
         private async void  MusicPlay(object _context)
@@ -528,3 +492,4 @@ namespace BotGear.Modules
 
     }
 }
+
