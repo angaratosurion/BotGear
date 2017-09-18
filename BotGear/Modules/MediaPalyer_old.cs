@@ -18,36 +18,37 @@ using System.Threading.Tasks;
 
 namespace BotGear.Modules
 {
-   // [Export(typeof(ModuleBase))]
+    // [Export(typeof(ModuleBase))]
     public class MediaPlayer_old : ModuleBase
-    { 
+    {
+
         private IVoiceChannel _voiceChannel;
-        private static  ITextChannel _textChannel;
-        private static  Queue<Tuple<string, string, string, string>> queue;
+        private static ITextChannel _textChannel;
+        private readonly Queue<Tuple<string, string, string, string>> queue;
         private TaskCompletionSource<bool> _tcs;
         private CancellationTokenSource _disposeToken;
         private IAudioClient _audio;
         //private const string ImABot = " *I'm a Bot, beep boop blop*";
-         
+
 
         private Queue<Tuple<string, string, string, string>> _queue;
         public MediaPlayer_old()
         {
             // _client = Context.Client;
-           //_voiceChannel = Context.Guild.GetVoiceChannelsAsync(CacheMode.AllowDownload).Result.FirstOrDefault(x => x.Name.ToLower() == "Music".ToLower());
+            //_voiceChannel = Context.Guild.GetVoiceChannelsAsync(CacheMode.AllowDownload).Result.FirstOrDefault(x => x.Name.ToLower() == "Music".ToLower());
 
-           // if (_voiceChannel == null)
-           // {
-           //       Context.Channel.SendMessageAsync("Create a Voice Channel with the name Music");
-                
+            // if (_voiceChannel == null)
+            // {
+            //       Context.Channel.SendMessageAsync("Create a Voice Channel with the name Music");
 
-           // }
-           // _textChannel= Context.Guild.GetTextChannelsAsync(CacheMode.AllowDownload).Result.FirstOrDefault(x => x.Name.ToLower() == "Music".ToLower());
-           // if (_textChannel == null)
-           // {
-           //     Context.Channel.SendMessageAsync("Create a Text Channel with the name Music");
-               
-           // }
+
+            // }
+            // _textChannel= Context.Guild.GetTextChannelsAsync(CacheMode.AllowDownload).Result.FirstOrDefault(x => x.Name.ToLower() == "Music".ToLower());
+            // if (_textChannel == null)
+            // {
+            //     Context.Channel.SendMessageAsync("Create a Text Channel with the name Music");
+
+            // }
             _queue = new Queue<Tuple<string, string, string, string>>();
             _tcs = new TaskCompletionSource<bool>();
             _disposeToken = new CancellationTokenSource();
@@ -63,7 +64,7 @@ namespace BotGear.Modules
 
             new Thread(threadStart).Start(Context);
         }
-        //[Command("come", RunMode = RunMode.Async)]
+        //[Command("come",RunMode =RunMode.Async)]
         //[Summary("Comes joins to the channel")]
         public async Task Come()
         {
@@ -75,7 +76,7 @@ namespace BotGear.Modules
 
                 if (_voiceChannel == null)
                 {
-                   await  Context.Channel.SendMessageAsync("Create a Voice Channel with the name Music");
+                    await Context.Channel.SendMessageAsync("Create a Voice Channel with the name Music");
 
 
                 }
@@ -87,21 +88,21 @@ namespace BotGear.Modules
                 }
 
                 _audio = await _voiceChannel.ConnectAsync();
-                
+
             }
             catch (Exception ex)
             {
                 CommonTools.ErrorReporting(ex);
             }
         }
-        //[Command("play", RunMode = RunMode.Async)]
+        //[Command("play",RunMode =RunMode.Async)]
         //[Summary("Palys music")]
         public async Task Play()
         {
             try
             {
                 Pause = false;
-                 this.MusicPlay(Context);
+                this.MusicPlay(Context);
                 await _textChannel.SendMessageAsync($"{Context.User.Mention} resumed playback!");
             }
             catch (Exception ex)
@@ -118,7 +119,7 @@ namespace BotGear.Modules
             {
                 await _textChannel.SendMessageAsync($"{Context.User.Mention} paused playback!");
                 Pause = true;
-         
+
             }
             catch (Exception ex)
             {
@@ -148,7 +149,7 @@ namespace BotGear.Modules
         {
             try
             {
-                if (parameter != null && _textChannel !=null)
+                if (parameter != null && _textChannel != null)
                 {
                     using (_textChannel.EnterTypingState())
                     {
@@ -161,29 +162,29 @@ namespace BotGear.Modules
                         if (result)
                         {
                             try
-                            { 
+                            {
                                 Tuple<string, string> info = await DownloadHelper.GetInfo(parameter);
-                                await SendMessage($"{Context.User.Mention} requested \"{info.Item1}\" ({info.Item2})! Downloading now..." );
+                                await SendMessage($"{Context.User.Mention} requested \"{info.Item1}\" ({info.Item2})! Downloading now...");
 
                                 //Download
-                                 
-                                var vidInfo = new Tuple<string, string, string, string>(parameter, info.Item1, info.Item2, Context.User.Mention);
+                                string file = await DownloadHelper.Download(parameter);
+                                var vidInfo = new Tuple<string, string, string, string>(file, info.Item1, info.Item2, Context.User.Mention);
 
                                 _queue.Enqueue(vidInfo);
                                 Pause = false;
-                                
+
                             }
                             catch (Exception ex)
                             {
-                                
+
                                 await SendMessage(
-                                    $"Sorry {Context.User.Mention}, unfortunately I can't play that Song!" )    ;
+                                    $"Sorry {Context.User.Mention}, unfortunately I can't play that Song!");
                             }
                         }
                         else
                         {
                             await _textChannel.SendMessageAsync(
-                                $"Sorry {Context.User.Mention}, but that was not a valid URL!" );
+                                $"Sorry {Context.User.Mention}, but that was not a valid URL!");
                         }
                     }
                 }
@@ -214,35 +215,35 @@ namespace BotGear.Modules
                         {
                             try
                             {
-                                
+
                                 Tuple<string, string> info = await DownloadHelper.GetInfo(parameter);
-                                await SendMessage($" {Context.User.Mention}requested Playlist \"{info.Item1}\" ({info.Item2})! Downloading now..." 
+                                await SendMessage($" {Context.User.Mention}requested Playlist \"{info.Item1}\" ({info.Item2})! Downloading now..."
                                                    );
 
                                 //Download
-                                string file = await DownloadHelper.DownloadPlaylist(parameter);
-                                var vidInfo = new Tuple<string, string, string, string>(file, info.Item1, info.Item2, Context.User.Mention);
+                                
+                                var vidInfo = new Tuple<string, string, string, string>(parameter, info.Item1, info.Item2, Context.User.Mention);
 
                                 _queue.Enqueue(vidInfo);
                                 Pause = false;
-                                 
+
                             }
                             catch (Exception ex)
                             {
-                                
+
                                 await SendMessage(
-                                    $"Sorry {Context.User.Mention}  unfortunately I can't play that Playlist!"  );
+                                    $"Sorry {Context.User.Mention}  unfortunately I can't play that Playlist!");
                             }
                         }
                         else
                         {
                             await _textChannel.SendMessageAsync(
-                                $"Sorry  {Context.User.Mention}  but that was not a valid URL!"  );
+                                $"Sorry  {Context.User.Mention}  but that was not a valid URL!");
                         }
                     }
                 }
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
 
                 CommonTools.ErrorReporting(ex);
@@ -258,9 +259,9 @@ namespace BotGear.Modules
                 Pause = true;
                 _queue.Clear();
                 await SendMessage(
-                           $"{Context.User.Mention}cleared the Playlist!" );
+                           $"{Context.User.Mention}cleared the Playlist!");
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 CommonTools.ErrorReporting(ex);
             }
@@ -303,16 +304,16 @@ namespace BotGear.Modules
         private bool _internalSkip;
 
 
-       
+
 
 
         #region Discord Helper
 
         //Login as Bot and Start Bot
-       
+
 
         //Log DiscordBot Messages to console
-    
+
         //Send Message to channel
         public async Task SendMessage(string message)
         {
@@ -330,10 +331,10 @@ namespace BotGear.Modules
                 Color = Pause ? new Color(244, 67, 54) /*Red*/ : new Color(00, 99, 33) /*Green*/
             };
             //builder.ThumbnailUrl = "some cool url";
-           
+
             if (_queue.Count == 0)
             {
-                await channel.SendMessageAsync("Sorry, Song Queue is empty! Add some songs with the `!add [url]` command!" );
+                await channel.SendMessageAsync("Sorry, Song Queue is empty! Add some songs with the `!add [url]` command!");
             }
             else
             {
@@ -358,7 +359,15 @@ namespace BotGear.Modules
 
 
         #region Audio
-        private static Process CreateStream(string url)
+        //Audio: PCM | 48000hz | mp3
+
+        //Get ffmpeg Audio Procecss
+       
+
+        //Get ffplay Audio Procecss
+       
+
+        private Process CreateStream(string url)
         {
             try
             {
@@ -374,7 +383,7 @@ namespace BotGear.Modules
                 };
 
                 currentsong.Start();
-               // FfmpegInstancces.Add(Context.Guild.Id, currentsong);
+                //FfmpegInstancces.Add(Context.Guild.Id, currentsong);
                 return currentsong;
             }
             catch (Exception ex)
@@ -384,30 +393,14 @@ namespace BotGear.Modules
                 return null;
             }
         }
-        //Audio: PCM | 48000hz | mp3
-
-        //Get ffmpeg Audio Procecss
-       
-
-        //Send Audio with ffmpeg
         private async Task SendAudio(string url)
         {
-
             try
             {
-                var channel = Context.Guild.GetVoiceChannelsAsync(CacheMode.AllowDownload).Result.FirstOrDefault(x => x.Name.ToLower() == "Music".ToLower());
-
-                if (channel == null)
-                {
-                    await Context.Channel.SendMessageAsync("Create a Voice Channel with the name Music");
-                    return;
-
-                }
-                _voiceChannel = channel;
                 if (url != null)
                 {
                     //(Context.User as IVoiceState).VoiceChannel;
-                    _audio = await channel.ConnectAsync();
+                   _audio = await _voiceChannel.ConnectAsync();
 
 
                     var output = CreateStream(url).StandardOutput.BaseStream;
@@ -419,14 +412,14 @@ namespace BotGear.Modules
             }
             catch (Exception ex)
             {
+
                 BotGear.Tools.CommonTools.ErrorReporting(ex);
-                //await Context.Channel.SendMessageAsync(ex.ToString());
             }
+
         }
-        
 
         //Looped Music Play
-        private async void  MusicPlay(object _context)
+        private async void MusicPlay(object _context)
         {
             bool next = false;
             ICommandContext context = (ICommandContext)_context;
@@ -449,7 +442,7 @@ namespace BotGear.Modules
                     if (_queue.Count == 0)
                     {
                         await SendMessage("Nothing :/");
-                      //  Print("Playlist ended.", ConsoleColor.Magenta);
+                        //  Print("Playlist ended.", ConsoleColor.Magenta);
                     }
                     else
                     {
@@ -458,7 +451,7 @@ namespace BotGear.Modules
                             //Get Song
                             var song = _queue.Peek();
                             //Update "Playing .."
-                           
+
                             await SendMessage($"Now playing: **{song.Item2}** ({song.Item3})");
 
                             //Send audio (Long Async blocking, Read/Write stream)
@@ -492,4 +485,3 @@ namespace BotGear.Modules
 
     }
 }
-
