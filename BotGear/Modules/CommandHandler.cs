@@ -53,6 +53,7 @@ namespace BotGear.Modules
                 foreach (var a in plugins)
                 {
                     await commands.AddModulesAsync(a);
+                     
 
                 }
             }

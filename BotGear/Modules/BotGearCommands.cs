@@ -266,7 +266,7 @@ namespace BotGear.Modules
                     embed.Title = $"**{user.Username}** was banned";///Who was banned///
                     embed.Description = $"**Username: **{user.Username}\n**Guild Name: **{user.Guild.Name}\n**Banned by: **{Context.User.Mention}!\n**Reason: **{reason}"; ///Embed values///]
                  await gld.AddBanAsync(user);///bans selected user///
-                    await Context.Channel.SendMessageAsync("", false, embed);///sends embed///              
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());///sends embed///              
               
 
             }
@@ -321,7 +321,7 @@ namespace BotGear.Modules
                 ///embed values///
                 ///
                 await user.KickAsync(); ///kicks selected user///
-                await Context.Channel.SendMessageAsync("", false, embed); ///sends embed///
+                await Context.Channel.SendMessageAsync("", false, embed.Build()); ///sends embed///
             }
             catch (Exception ex)
             {

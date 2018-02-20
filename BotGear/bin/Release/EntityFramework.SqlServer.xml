@@ -1479,6 +1479,12 @@
             <param name="geometryValue">The geometry value.</param>
             <param name="tolerance">The tolerance to input to the Douglas-Peucker algorithm. tolerance must be a positive number.</param>
         </member>
+        <member name="M:System.Data.Entity.SqlServer.SqlProviderManifest.SupportsParameterOptimizationInSchemaQueries">
+            <summary>
+            Indicates if the provider supports the parameter optimization described in EntityFramework6 GitHub issue #195.
+            </summary>
+            <returns><c>True</c> since this provider supports the parameter optimization.</returns>
+        </member>
         <member name="T:System.Data.Entity.SqlServer.SqlProviderServices">
             <summary>
             The DbProviderServices implementation for the SqlClient provider for SQL Server.

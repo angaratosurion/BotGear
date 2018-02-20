@@ -22139,6 +22139,14 @@
             <returns>True if this provider supports escaping strings to be used as patterns in a Like expression; otherwise, false.</returns>
             <param name="escapeCharacter">If the provider supports escaping, the character that would be used as the escape character.</param>
         </member>
+        <member name="M:System.Data.Entity.Core.Common.DbProviderManifest.SupportsParameterOptimizationInSchemaQueries">
+            <summary>
+            Indicates if the provider supports the parameter optimization described in EntityFramework6 GitHub issue #195.
+            The default is <c>false</c>. Providers should change this to true only after testing that schema queries (as
+            used in the Database First flow) work correctly with this flag.
+            </summary>
+            <returns><c>True</c> only if the provider supports the parameter optimization.</returns>
+        </member>
         <member name="M:System.Data.Entity.Core.Common.DbProviderManifest.EscapeLikeArgument(System.String)">
             <summary>Provider writers should override this method to return the argument with the wildcards and the escape character escaped. This method is only used if SupportsEscapingLikeArgument returns true.</summary>
             <returns>The argument with the wildcards and the escape character escaped.</returns>
@@ -48040,6 +48048,11 @@
             The IQueryable provider.
             </summary>
         </member>
+        <member name="P:System.Data.Entity.Infrastructure.DbQuery.Sql">
+            <summary>
+            Gets a <see cref="T:System.String"/> representation of the underlying query.
+            </summary>
+        </member>
         <member name="M:System.Data.Entity.DbSet.#ctor">
             <summary>
             Creates an instance of a <see cref="T:System.Data.Entity.DbSet"/> when called from the constructor of a derived
@@ -48389,6 +48402,11 @@
         <member name="P:System.Data.Entity.Infrastructure.DbQuery`1.System#Linq#IQueryable#Provider">
             <summary>
             The IQueryable provider.
+            </summary>
+        </member>
+        <member name="P:System.Data.Entity.Infrastructure.DbQuery`1.Sql">
+            <summary>
+            Gets a <see cref="T:System.String"/> representation of the underlying query.
             </summary>
         </member>
         <member name="T:System.Data.Entity.IDbSet`1">
