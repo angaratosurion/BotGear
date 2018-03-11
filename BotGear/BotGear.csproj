@@ -277,10 +277,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="config_debug.json">
+    <None Include="config_debug.token">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="config.json">
+    <None Include="config.token">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="launch.cmd">

@@ -54,3 +54,4 @@ packages/
 /Bots
 /bin/
 bin/
+*.token
