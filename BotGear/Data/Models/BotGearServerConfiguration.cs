@@ -16,5 +16,9 @@ namespace BotGear.Data.Models
 
         public string rules_channel_name { get; set; }
         public string rules { get; set; }
+
+        public string welcome_channel_name { get; set; }
+
+        public string allow_channels_name { get; set; }
     }
 }

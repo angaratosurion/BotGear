@@ -1,4 +1,5 @@
-﻿using BotGear.Managers;
+﻿using BotGear.Data.Models;
+using BotGear.Managers;
 using BotGear.Tools;
 using Discord;
 using Discord.Commands;
@@ -17,8 +18,12 @@ namespace BotGear.Modules
         private CommandService commands;
         private DiscordSocketClient client;
         private IServiceProvider _provider;
+        ServerConfigManager confmngr = new ServerConfigManager();
+        ModuleConverter mdconv = new ModuleConverter();
         /// private IDependencyMap map;
+       ServerManager srvmngr = new ServerManager();
          
+
         public CommandHandler(IServiceProvider provider, DiscordSocketClient discord, CommandService tcommands)
         {
             client= discord;
@@ -126,11 +131,27 @@ namespace BotGear.Modules
         {
             try
             {
-                var channel = user.Guild.DefaultChannel;
-                if (channel != null && user.IsBot == false)
+                
+                var conf =   confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(user.Guild).Id).Result;
+                if (conf != null && conf.welcome_channel_name!=null )
                 {
-                      channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
+                    var channel = user.Guild.TextChannels.First(x => x.Name == conf.welcome_channel_name);
+                    if (channel != null && user.IsBot == false)
+                    {
+                        channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
+                    }
                 }
+                else
+                {
+
+                    var channel = user.Guild.DefaultChannel;
+
+                    if (channel != null && user.IsBot == false)
+                    {
+                        channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
+                    }
+                }
+                
                 return Task.CompletedTask;
             }
             catch (Exception ex)
@@ -144,10 +165,23 @@ namespace BotGear.Modules
         {
             try
             {
-                var channel = user.Guild.DefaultChannel;
-                if (channel !=null && user.IsBot ==false)
+                var conf = confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(user.Guild).Id).Result;
+                if (conf != null && conf.welcome_channel_name != null)
                 {
-                    channel.SendMessageAsync(String.Format("Welcome {0} type !rules to read the rules ", user.Mention));
+                    var channel = user.Guild.TextChannels.First(x => x.Name == conf.welcome_channel_name);
+                    if (channel != null && user.IsBot == false)
+                    {
+                        channel.SendMessageAsync(String.Format("Welcome {0} type !rules to read the rules ", user.Mention));
+                    }
+                }
+                else
+                {
+
+                    var channel = user.Guild.DefaultChannel;
+                    if (channel != null && user.IsBot == false)
+                    {
+                        channel.SendMessageAsync(String.Format("Welcome {0} type !rules to read the rules ", user.Mention));
+                    }
                 }
                 return Task.CompletedTask;
             }
@@ -165,35 +199,108 @@ namespace BotGear.Modules
 
         public async Task HandleCommand(SocketMessage parameterMessage)
         {
+            try
+            { 
             //Don't handle the command if it is a system message
             var message = parameterMessage as SocketUserMessage;
             if (message == null) return;
+                
+                    //Mark where the prefix ends and the command begins
+                    int argPos = 0;
+                    //Determine if the message has a valid prefix, adjust argPos
+                    //if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasCharPrefix('!', ref argPos))) return;
+                    if (!(message.HasCharPrefix('!', ref argPos))) return;
 
-            //Mark where the prefix ends and the command begins
-            int argPos = 0;
-            //Determine if the message has a valid prefix, adjust argPos
-            //if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasCharPrefix('!', ref argPos))) return;
-            if (!(message.HasCharPrefix('!', ref argPos))) return;
-
-            //Create a Command Context
-            var context = new CommandContext(client, message);
-            //Execute the command, store the result
-            var result = await commands.ExecuteAsync(context, argPos,_provider);
-
-            //If the command failed, notify the user
-            if (!result.IsSuccess)
-            {
-
-                // var emote = context.Guild.Emotes.First(x => x.Name == "x");
-                byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
-                var emote = new Emoji("❌");
-                 
-                if (emote != null)
+                    //Create a Command Context
+                    var context = new CommandContext(client, message);
+                //Execute the command, store the result
+                var conf = await confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(context.Guild).Id);
+                if (conf != null && conf.allow_channels_name != null )
                 {
-                    await message.AddReactionAsync(emote, null);
+                    string[] allowedcahnels = conf.allow_channels_name.Split(',');
+                    if (allowedcahnels != null && allowedcahnels.Contains(context.Channel.Name))
+                    {
+                        var result = await commands.ExecuteAsync(context, argPos, _provider);
+
+
+
+                        //If the command failed, notify the user
+                        if (!result.IsSuccess)
+                        {
+
+                            // var emote = context.Guild.Emotes.First(x => x.Name == "x");
+                            byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
+                            var emote = new Emoji("❌");
+
+                            if (emote != null)
+                            {
+                                await message.AddReactionAsync(emote, null);
+                            }
+
+                            //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+                        }
+                    }
                 }
 
-                //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+                else if(message.Content.Contains("setallowed_channels")==true)
+                {
+                    //If the command failed, notify the user
+                    var result = await commands.ExecuteAsync(context, argPos, _provider);
+
+                    if (!result.IsSuccess)
+                    {
+
+                        // var emote = context.Guild.Emotes.First(x => x.Name == "x");
+                        byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
+                        var emote = new Emoji("❌");
+
+                        if (emote != null)
+                        {
+                            await message.AddReactionAsync(emote, null);
+                        }
+
+                        //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+                    }
+                }
+
+                else
+                {
+                    /*var dmchannel = await context.Guild.GetUserAsync(context.Guild.OwnerId).Result.GetOrCreateDMChannelAsync();
+                    if(dmchannel!=null )
+                    {
+                        dmchannel.SendMessageAsync("Configure the list of channels the bot is allowed to type Seperated by ','\n" +
+                            "with the setallowedcahnenels command ");
+                        
+                    }*/
+                    
+                   var channel =context.Guild.GetDefaultChannelAsync().Result.Name;
+                    String serverid = Convert.ToString(context.Guild.Id);
+                    if (await this.confmngr.ServersConfigurationExists(serverid) != true 
+                        && await srvmngr.ServerExists(serverid) == true)
+                    {
+                        BotGearServerConfiguration tconf = new BotGearServerConfiguration();
+                        tconf.ServerId = serverid;
+                        tconf.allow_channels_name = channel;
+                        await this.confmngr.AddServerConfiguration(tconf);
+                        await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
+                    }
+
+                    else
+                    {
+                        await srvmngr.addServer(context.Guild);
+                        BotGearServerConfiguration tconf = new BotGearServerConfiguration();
+                        tconf.ServerId = serverid;
+                        tconf.allow_channels_name = channel;
+                        await this.confmngr.AddServerConfiguration(tconf);
+                        await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+               
             }
         }
 

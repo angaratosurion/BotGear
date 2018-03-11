@@ -134,6 +134,8 @@ namespace BotGear.Managers
                         newconf.rules = newvals.rules;
                         newconf.rules_channel_name = newvals.rules_channel_name;
                         newconf.ServerId = x.ServerId;
+                        newconf.allow_channels_name = newvals.allow_channels_name;
+                        newconf.welcome_channel_name = newvals.welcome_channel_name;
                         db.Entry(x).CurrentValues.SetValues(newconf);
 
 

@@ -31,14 +31,16 @@ namespace BotGear.Modules
                 if (String.IsNullOrWhiteSpace(rulechannelname) != true)
                 {
                     String serverid = Convert.ToString(this.Context.Guild.Id);
-                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true && await srvmngr.ServerExists(serverid) == true)
+                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true
+                        && await srvmngr.ServerExists(serverid) == true)
                     {
                         var oldconf = await srvConfmngr.GetServersConfigurationById(serverid);
                         oldconf.rules_channel_name = rulechannelname;
                         await srvConfmngr.EditServerConfiguration(serverid, oldconf);
                         await ReplyAsync("Rule Channel had been Set");
                     }
-                    else if (await srvConfmngr.ServersConfigurationExists(serverid) == true && await srvmngr.ServerExists(serverid) != true)
+                    else if (await srvConfmngr.ServersConfigurationExists(serverid) == true 
+                        && await srvmngr.ServerExists(serverid) != true)
                     {
 
                         var oldconf = await srvConfmngr.GetServersConfigurationById(serverid);
@@ -118,7 +120,7 @@ namespace BotGear.Modules
             }
         }
         [Command("rules")]
-        [Summary("Sets the rule Chnanel for the server")]
+        [Summary("Shows the rulesr")]
         public async Task getRules()
         {
             try
@@ -162,8 +164,11 @@ namespace BotGear.Modules
                     var conf = await srvConfmngr.GetServersConfigurationById(serverid);
 
 
-                    string text = String.Format("Rules Channel :{0}\n Rules :\n {1}\n\n Notify on Rules Cahnge {2}"
-                        , conf.rules_channel_name, conf.rules, conf.Notify_everyon_rulesChange);
+                    string text = String.Format("Rules Channel :{0}\n Rules :\n {1}\n\n Notify on Rules Cahnge {2}\n" +
+                        " Allowed channels for the bot to type{3}\n" +
+                        "Welcome and Goodbyes Channel {4}"
+
+                        , conf.rules_channel_name, conf.rules, conf.Notify_everyon_rulesChange,conf.allow_channels_name,conf.welcome_channel_name);
 
 
                     await ReplyAsync("Server Configuration :: \n " + text);
@@ -240,6 +245,182 @@ namespace BotGear.Modules
                 }
 
 
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("setallowed_channels")]
+        [Summary("Sets the  Chnanels  for the bot to reply")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task setAllowedChannels(string channels)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(channels) != true)
+                {
+                    String serverid = Convert.ToString(this.Context.Guild.Id);
+                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                    {
+                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+                        conf.allow_channels_name = channels;
+
+                        await srvConfmngr.EditServerConfiguration(serverid, conf);
+                        await ReplyAsync("Channels had been Set");
+
+
+                    }
+                   
+                        else if (await srvConfmngr.ServersConfigurationExists(serverid) == true
+                        && await srvmngr.ServerExists(serverid) != true)
+                        {
+
+                            var oldconf = await srvConfmngr.GetServersConfigurationById(serverid);
+                            oldconf.allow_channels_name = channels;
+                            await srvConfmngr.EditServerConfiguration(serverid, oldconf);
+
+                            await srvmngr.addServer(this.Context.Guild);
+                            await ReplyAsync("Allowed  Channels had been Set");
+                        }
+                        else if (await srvConfmngr.ServersConfigurationExists(serverid) != true && await srvmngr.ServerExists(serverid) == true)
+                        {
+                            BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                            conf.ServerId = serverid;
+                            conf.allow_channels_name = channels;
+                            await this.srvConfmngr.AddServerConfiguration(conf);
+                            await ReplyAsync("Allowed  Channels  had been Set");
+                        }
+
+                        else
+                        {
+                            await srvmngr.addServer(this.Context.Guild);
+                            BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                            conf.ServerId = serverid;
+                            conf.allow_channels_name = channels;
+                            await this.srvConfmngr.AddServerConfiguration(conf);
+                            await ReplyAsync("Allowed  ChannelsChannel had been Set");
+                        }
+
+                    
+                }
+            
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("allowedcahnenels")]
+        [Summary("Sets  the  Chnanels  for the bot to reply")]
+        public async Task getAllowedChannels()
+        {
+            try
+            {
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+
+
+                    string trules = conf.allow_channels_name;
+
+
+                    await ReplyAsync("Allowed Channels : \n " + trules);
+
+                }
+                
+
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("welcome_and_goodbye_channel")]
+        [Summary("Gets  the  Chnanels  for the bot to reply")]
+        public async Task getWelcome_and_GoodByes_Channel()
+        {
+            try
+            {
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+
+
+                    string trules = conf.welcome_channel_name;
+
+
+                    await ReplyAsync("Welcome and Goodbye Channel : \n " + trules);
+
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("setwelcome_and_goodbye_channel")]
+        [Summary("Sets the  Channel for welcome and goodbye")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task setWelcome_and_GoodByes_Channel(string channels)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(channels) != true)
+                {
+                    String serverid = Convert.ToString(this.Context.Guild.Id);
+                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                    {
+                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+                        conf.welcome_channel_name = channels;
+
+                        await srvConfmngr.EditServerConfiguration(serverid, conf);
+                        await ReplyAsync("Settings had been Set");
+
+
+                    }
+
+                    else if (await srvConfmngr.ServersConfigurationExists(serverid) == true
+                    && await srvmngr.ServerExists(serverid) != true)
+                    {
+
+                        var oldconf = await srvConfmngr.GetServersConfigurationById(serverid);
+                        oldconf.welcome_channel_name = channels;
+                        await srvConfmngr.EditServerConfiguration(serverid, oldconf);
+
+                        await srvmngr.addServer(this.Context.Guild);
+                        await ReplyAsync("Settings had been Set");
+                    }
+                    else if (await srvConfmngr.ServersConfigurationExists(serverid) != true && await srvmngr.ServerExists(serverid) == true)
+                    {
+                        BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                        conf.ServerId = serverid;
+                        conf.welcome_channel_name = channels;
+                        await this.srvConfmngr.AddServerConfiguration(conf);
+                        await ReplyAsync("Settings had been Set");
+                    }
+
+                    else
+                    {
+                        await srvmngr.addServer(this.Context.Guild);
+                        BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                        conf.ServerId = serverid;
+                        conf.welcome_channel_name = channels;
+                        await this.srvConfmngr.AddServerConfiguration(conf);
+                        await ReplyAsync("Settings had been Set");
+                    }
+
+
+                }
 
             }
             catch (Exception ex)
