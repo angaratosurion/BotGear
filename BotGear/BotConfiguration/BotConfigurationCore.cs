@@ -31,6 +31,7 @@ namespace BotGear.BotConfiguration
                     var services = ConfigureServices(commhndl);
                     // services.GetRequiredService<LogService>();
                     await services.GetRequiredService<CommandHandler>().Install(services);
+                    tclient.Disconnected += Tclient_Disconnected;
                 }
                 return _client;
             }
@@ -43,7 +44,25 @@ namespace BotGear.BotConfiguration
 
         }
 
-       
+        private Task Tclient_Disconnected(Exception arg)
+        {
+            try
+            {
+
+
+                Task.Delay(10000);
+                System.Diagnostics.Process.Start("launch.cmd");
+                Environment.Exit(0);
+                return Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+                return Task.CompletedTask;
+            }
+
+        }
+
         public IServiceProvider ConfigureServices(CommandHandler commhndl)
         {
             try

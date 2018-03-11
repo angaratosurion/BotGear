@@ -166,22 +166,25 @@ namespace BotGear.Modules
             try
             {
                 var conf = confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(user.Guild).Id).Result;
+                WelcomeMessageBulder welcomeMeesageBulder = new WelcomeMessageBulder();
                 if (conf != null && conf.welcome_channel_name != null)
                 {
-                    var channel = user.Guild.TextChannels.First(x => x.Name == conf.welcome_channel_name);
+                    var channel = user.Guild.TextChannels.First(x => x.Name == conf.rules_channel_name);
                     if (channel != null && user.IsBot == false)
                     {
-                        channel.SendMessageAsync(String.Format("Welcome {0} type !rules to read the rules ", user.Mention));
+                        var rulechannel = user.Guild.TextChannels.First(x => x.Name == conf.welcome_channel_name);
+                        var welcome_message = welcomeMeesageBulder.CreateMessage(conf.welcome_message, user, rulechannel).Result;
+                        channel.SendMessageAsync(welcome_message);
                     }
                 }
                 else
                 {
 
-                    var channel = user.Guild.DefaultChannel;
+                    /*var channel = user.Guild.DefaultChannel;
                     if (channel != null && user.IsBot == false)
                     {
                         channel.SendMessageAsync(String.Format("Welcome {0} type !rules to read the rules ", user.Mention));
-                    }
+                    }*/
                 }
                 return Task.CompletedTask;
             }
@@ -242,7 +245,7 @@ namespace BotGear.Modules
                     }
                 }
 
-                else if(message.Content.Contains("setallowed_channels")==true)
+                else if(message.Content.Contains("setallowed_channels")==true )
                 {
                     //If the command failed, notify the user
                     var result = await commands.ExecuteAsync(context, argPos, _provider);

@@ -264,6 +264,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modules\BotGearCommands.cs" />
     <Compile Include="Modules\CommandBuilder\HelpCommand.cs" />
+    <Compile Include="Tools\WelcomeMessageBulder.cs" />
     <Compile Include="Modules\CommandHandler.cs" />
     <Compile Include="Modules\MediaPalyer_old.cs" />
     <Compile Include="Modules\MediaPlayer.cs" />

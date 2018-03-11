@@ -22,7 +22,7 @@ namespace BotGear.Modules
         ServerConfigManager srvConfmngr = new ServerConfigManager();
    
         [Command("setrulechannel")]
-        [Summary("Sets the rule Chnanel for the server")]
+        [Summary("Sets the rule Channel for the server")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetRulesChannel(string rulechannelname)
         {
@@ -77,7 +77,7 @@ namespace BotGear.Modules
             }
         }
         [Command("setrules")]
-        [Summary("Sets the rule Chnanel for the server")]
+        [Summary("Sets the rule Channel for the server")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task setRules(string rules)
         {
@@ -120,7 +120,7 @@ namespace BotGear.Modules
             }
         }
         [Command("rules")]
-        [Summary("Shows the rulesr")]
+        [Summary("Shows the rules")]
         public async Task getRules()
         {
             try
@@ -131,11 +131,18 @@ namespace BotGear.Modules
                 {
                     var conf = await srvConfmngr.GetServersConfigurationById(serverid);
 
-
+                    var channel = Context.Guild.GetTextChannelsAsync().Result.First(x => x.Name == conf.rules_channel_name);
                     string trules = conf.rules;
 
-
-                    await ReplyAsync("Rules : \n " + trules);
+                    if (channel != null)
+                    {
+                        await channel.SendMessageAsync("Rules : \n " + trules);
+                    }                
+                    else
+                    {
+                        await ReplyAsync("Rules : \n " + trules);
+                    }
+                    
 
                 }
                 else
@@ -152,7 +159,7 @@ namespace BotGear.Modules
             }
         }
         [Command("getServerConf")]
-        [Summary("Sets the rule Chnanel for the server")]
+        [Summary("Sets the rule Channel for the server")]
         public async Task getserverConfig()
         {
             try
@@ -166,9 +173,9 @@ namespace BotGear.Modules
 
                     string text = String.Format("Rules Channel :{0}\n Rules :\n {1}\n\n Notify on Rules Cahnge {2}\n" +
                         " Allowed channels for the bot to type{3}\n" +
-                        "Welcome and Goodbyes Channel {4}"
+                        "Welcome and Goodbyes Channel :{4}\n Welcome Message:{5}\n"
 
-                        , conf.rules_channel_name, conf.rules, conf.Notify_everyon_rulesChange,conf.allow_channels_name,conf.welcome_channel_name);
+                        , conf.rules_channel_name, conf.rules, conf.Notify_everyon_rulesChange,conf.allow_channels_name,conf.welcome_channel_name,conf.welcome_message);
 
 
                     await ReplyAsync("Server Configuration :: \n " + text);
@@ -189,7 +196,7 @@ namespace BotGear.Modules
             }
         }
         [Command("setnotifyOnruleson")]
-        [Summary("Enable /Disab;e the notification on Rules changed (type only true or false)")]
+        [Summary("Enable /Disable the notification on Rules change (type only true or false)")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task setNotificationOnRuleChangeOn()
         {
@@ -221,7 +228,7 @@ namespace BotGear.Modules
             }
         }
         [Command("setnotifyOnrulesoff")]
-        [Summary("Enable /Disable the notification on Rules changed (type only true or false)")]
+        [Summary("Enable /Disable the notification on Rules change (type only true or false)")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task setNotificationOnRuleChangeOff()
         {
@@ -253,7 +260,7 @@ namespace BotGear.Modules
             }
         }
         [Command("setallowed_channels")]
-        [Summary("Sets the  Chnanels  for the bot to reply")]
+        [Summary("Sets the  Channels  for the bot to reply")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task setAllowedChannels(string channels)
         {
@@ -313,7 +320,7 @@ namespace BotGear.Modules
             }
         }
         [Command("allowedcahnenels")]
-        [Summary("Sets  the  Chnanels  for the bot to reply")]
+        [Summary("Sets  the  Channels  for the bot to reply")]
         public async Task getAllowedChannels()
         {
             try
@@ -341,7 +348,7 @@ namespace BotGear.Modules
             }
         }
         [Command("welcome_and_goodbye_channel")]
-        [Summary("Gets  the  Chnanels  for the bot to reply")]
+        [Summary("Gets  the  Channels  for the bot to reply")]
         public async Task getWelcome_and_GoodByes_Channel()
         {
             try
@@ -368,6 +375,7 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
+
         [Command("setwelcome_and_goodbye_channel")]
         [Summary("Sets the  Channel for welcome and goodbye")]
         [RequireUserPermission(GuildPermission.Administrator)]
@@ -421,6 +429,96 @@ namespace BotGear.Modules
 
 
                 }
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+
+        [Command("setwelcome_message")]
+        [Summary("Sets  Template of  the welcome message")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task setWelcome_Message(string Message)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(Message) != true)
+                {
+                    String serverid = Convert.ToString(this.Context.Guild.Id);
+                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                    {
+                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+                        conf.welcome_message = Message;
+
+                        await srvConfmngr.EditServerConfiguration(serverid, conf);
+                        await ReplyAsync("Settings had been Set");
+
+
+                    }
+
+                    else if (await srvConfmngr.ServersConfigurationExists(serverid) == true
+                    && await srvmngr.ServerExists(serverid) != true)
+                    {
+
+                        var oldconf = await srvConfmngr.GetServersConfigurationById(serverid);
+                        oldconf.welcome_message = Message;
+                        await srvConfmngr.EditServerConfiguration(serverid, oldconf);
+
+                        await srvmngr.addServer(this.Context.Guild);
+                        await ReplyAsync("Settings had been Set");
+                    }
+                    else if (await srvConfmngr.ServersConfigurationExists(serverid) != true && await srvmngr.ServerExists(serverid) == true)
+                    {
+                        BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                        conf.ServerId = serverid;
+                        conf.welcome_message = Message;
+                        await this.srvConfmngr.AddServerConfiguration(conf);
+                        await ReplyAsync("Settings had been Set");
+                    }
+
+                    else
+                    {
+                        await srvmngr.addServer(this.Context.Guild);
+                        BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                        conf.ServerId = serverid;
+                        conf.welcome_message = Message;
+                        await this.srvConfmngr.AddServerConfiguration(conf);
+                        await ReplyAsync("Settings had been Set");
+                    }
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+
+        [Command("getwelcome_message")]
+        [Summary("Gets  the  Template the wlecome message of the bot will have.")]
+        public async Task getWelcome_Message()
+        {
+            try
+            {
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+
+
+                    string trules = conf.welcome_message;
+
+
+                    await ReplyAsync("Welcome Message : \n " + trules);
+
+                }
+
+
 
             }
             catch (Exception ex)
@@ -527,6 +625,22 @@ namespace BotGear.Modules
             }
 
         }
-       
+        [Command("killbot")]
+        [RequireOwner]
+        public async Task killmethodxd()
+        {
+            try
+            {
+
+
+               
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+
+        }
     }
 }
