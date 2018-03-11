@@ -96,9 +96,9 @@ namespace BotGear.BotConfiguration
                 return new ConfigurationBuilder()
                    .SetBasePath(Directory.GetCurrentDirectory())
 #if DEBUG
-               .AddJsonFile("config_debug.json")
+               .AddJsonFile("config_debug.token")
 #else
-                .AddJsonFile("config.json")
+                .AddJsonFile("config.token")
 #endif
                 .Build();
             }
