@@ -169,10 +169,10 @@ namespace BotGear.Modules
                 WelcomeMessageBulder welcomeMeesageBulder = new WelcomeMessageBulder();
                 if (conf != null && conf.welcome_channel_name != null)
                 {
-                    var channel = user.Guild.TextChannels.First(x => x.Name == conf.rules_channel_name);
+                    var channel = user.Guild.TextChannels.First(x => x.Name == conf.welcome_channel_name);
                     if (channel != null && user.IsBot == false)
                     {
-                        var rulechannel = user.Guild.TextChannels.First(x => x.Name == conf.welcome_channel_name);
+                        var rulechannel = user.Guild.TextChannels.First(x => x.Name == conf.rules_channel_name);
                         var welcome_message = welcomeMeesageBulder.CreateMessage(conf.welcome_message, user, rulechannel).Result;
                         channel.SendMessageAsync(welcome_message);
                     }
