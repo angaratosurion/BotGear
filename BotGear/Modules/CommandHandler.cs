@@ -144,12 +144,12 @@ namespace BotGear.Modules
                 else
                 {
 
-                    var channel = user.Guild.DefaultChannel;
+                    /*var channel = user.Guild.DefaultChannel;
 
                     if (channel != null && user.IsBot == false)
                     {
                         channel.SendMessageAsync(String.Format("Bye {0} ", user.Mention));
-                    }
+                    }*/
                 }
                 
                 return Task.CompletedTask;
