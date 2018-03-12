@@ -216,9 +216,33 @@ namespace BotGear.Modules
 
                     //Create a Command Context
                     var context = new CommandContext(client, message);
+                
+                var channeltype = context.Channel.GetType();
+                 if (channeltype == typeof(SocketDMChannel) && context.Guild == null)
+                {
+                    var result = await commands.ExecuteAsync(context, argPos, _provider);
+
+                    if (!result.IsSuccess)
+                    {
+
+                        // var emote = context.Guild.Emotes.First(x => x.Name == "x");
+                        byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
+                        var emote = new Emoji("❌");
+
+                        if (emote != null)
+                        {
+                            await message.AddReactionAsync(emote, null);
+                        }
+
+                        //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+                    }
+                   return ;
+                }
+
                 //Execute the command, store the result
                 var conf = await confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(context.Guild).Id);
-                if (conf != null && conf.allow_channels_name != null )
+                if (conf != null && conf.allow_channels_name != null && channeltype!=typeof(SocketDMChannel)
+                    &&context.Guild!=null)
                 {
                     string[] allowedcahnels = conf.allow_channels_name.Split(',');
                     if (allowedcahnels != null && allowedcahnels.Contains(context.Channel.Name))
@@ -265,7 +289,7 @@ namespace BotGear.Modules
                         //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
                     }
                 }
-
+              
                 else
                 {
                     /*var dmchannel = await context.Guild.GetUserAsync(context.Guild.OwnerId).Result.GetOrCreateDMChannelAsync();
