@@ -266,6 +266,7 @@ namespace BotGear.Modules
 
                             //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
                         }
+                        return;
                     }
                 }
 
@@ -288,6 +289,7 @@ namespace BotGear.Modules
 
                         //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
                     }
+                    return;
                 }
               
                 else
@@ -321,6 +323,7 @@ namespace BotGear.Modules
                         await this.confmngr.AddServerConfiguration(tconf);
                         await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
                     }
+                    return;
                 }
                 
             }
