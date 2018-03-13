@@ -29,6 +29,11 @@ namespace BotGear.Tools
                     {
                         ap = template.Replace("%channel", rulechannel.Mention);
                     }
+                    else if(template.Contains("%user") && template.Contains("%channel"))
+                    {
+                        ap = template.Replace("%user", User.Mention);
+                        ap = ap.Replace("%channel", rulechannel.Mention);
+                    }
                 }
 
                 return ap;
