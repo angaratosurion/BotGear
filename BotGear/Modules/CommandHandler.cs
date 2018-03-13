@@ -301,27 +301,44 @@ namespace BotGear.Modules
                             "with the setallowedcahnenels command ");
                         
                     }*/
-                    
-                   var channel =context.Guild.GetDefaultChannelAsync().Result.Name;
-                    String serverid = Convert.ToString(context.Guild.Id);
-                    if (await this.confmngr.ServersConfigurationExists(serverid) != true 
-                        && await srvmngr.ServerExists(serverid) == true)
-                    {
-                        BotGearServerConfiguration tconf = new BotGearServerConfiguration();
-                        tconf.ServerId = serverid;
-                        tconf.allow_channels_name = channel;
-                        await this.confmngr.AddServerConfiguration(tconf);
-                        await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
-                    }
 
-                    else
+                    /*var channel =context.Guild.GetDefaultChannelAsync().Result.Name;
+                     String serverid = Convert.ToString(context.Guild.Id);
+                     if (await this.confmngr.ServersConfigurationExists(serverid) != true 
+                         && await srvmngr.ServerExists(serverid) == true)
+                     {
+                         BotGearServerConfiguration tconf = new BotGearServerConfiguration();
+                         tconf.ServerId = serverid;
+                         tconf.allow_channels_name = channel;
+                         await this.confmngr.AddServerConfiguration(tconf);
+                         await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
+                     }
+
+                     else
+                     {
+                         await srvmngr.addServer(context.Guild);
+                         BotGearServerConfiguration tconf = new BotGearServerConfiguration();
+                         tconf.ServerId = serverid;
+                         tconf.allow_channels_name = channel;
+                         await this.confmngr.AddServerConfiguration(tconf);
+                         await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
+                     }*/
+
+                    var result = await commands.ExecuteAsync(context, argPos, _provider);
+
+                    if (!result.IsSuccess)
                     {
-                        await srvmngr.addServer(context.Guild);
-                        BotGearServerConfiguration tconf = new BotGearServerConfiguration();
-                        tconf.ServerId = serverid;
-                        tconf.allow_channels_name = channel;
-                        await this.confmngr.AddServerConfiguration(tconf);
-                        await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
+
+                        // var emote = context.Guild.Emotes.First(x => x.Name == "x");
+                        byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
+                        var emote = new Emoji("❌");
+
+                        if (emote != null)
+                        {
+                            await message.AddReactionAsync(emote, null);
+                        }
+
+                        //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
                     }
                     return;
                 }
@@ -330,7 +347,30 @@ namespace BotGear.Modules
             catch (Exception ex)
             {
                 CommonTools.ErrorReporting(ex);
-               
+                var message = parameterMessage as SocketUserMessage;
+                if ( message ==null)
+                {
+                    return ;
+                }
+                var context = new CommandContext(client, message);
+                if (context == null )
+                {
+                    return;
+                }
+                 var appinf=await context.Client.GetApplicationInfoAsync();
+                if ( appinf == null)
+                {
+                    return;
+                }
+               var dmchannel =await appinf.Owner.GetOrCreateDMChannelAsync();
+                if ( dmchannel !=null)
+                {
+                   await  dmchannel.SendMessageAsync(String.Format("an Exception was thrown at :{0} {1}",DateTime.Now.ToLongDateString() ,
+                       DateTime.Now.ToLongTimeString()));
+                }
+                
+
+
             }
         }
 
