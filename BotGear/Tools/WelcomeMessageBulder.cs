@@ -20,20 +20,23 @@ namespace BotGear.Tools
                 string ap="";
                 if( String.IsNullOrWhiteSpace(template)==false && User!=null &&rulechannel!=null)
                 {
-                    if ( template.Contains("%user"))
+                    if(template.Contains("%user%") && template.Contains("%channel%"))
                     {
-                        ap= template.Replace("%user",User.Mention);
+                        ap = (template.Replace("%user%", User.Mention)).Replace("%channel%", rulechannel.Mention);
+                        //ap = ap
+
+                        return ap;
+                    }
+                    if ( template.Contains("%user%"))
+                    {
+                        ap= template.Replace("%user%",User.Mention);
                     }
 
-                    if (template.Contains("%channel"))
+                    if (template.Contains("%channel%"))
                     {
-                        ap = template.Replace("%channel", rulechannel.Mention);
+                        ap = template.Replace("%channel%", rulechannel.Mention);
                     }
-                    else if(template.Contains("%user") && template.Contains("%channel"))
-                    {
-                        ap = template.Replace("%user", User.Mention);
-                        ap = ap.Replace("%channel", rulechannel.Mention);
-                    }
+                   
                 }
 
                 return ap;
