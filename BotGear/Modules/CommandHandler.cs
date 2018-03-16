@@ -228,22 +228,8 @@ namespace BotGear.Modules
                 var channeltype = context.Channel.GetType();
                  if (channeltype == typeof(SocketDMChannel) && context.Guild == null)
                 {
-                    var result = await commands.ExecuteAsync(context, argPos, _provider);
-
-                    if (!result.IsSuccess)
-                    {
-
-                        // var emote = context.Guild.Emotes.First(x => x.Name == "x");
-                        byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
-                        var emote = new Emoji("❌");
-
-                        if (emote != null)
-                        {
-                            await message.AddReactionAsync(emote, null);
-                        }
-
-                        //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
-                    }
+                    
+                   await this.ExecuteCommand(message, context, argPos);
                    return ;
                 }
 
@@ -255,25 +241,7 @@ namespace BotGear.Modules
                     string[] allowedcahnels = conf.allow_channels_name.Split(',');
                     if (allowedcahnels != null && allowedcahnels.Contains(context.Channel.Name))
                     {
-                        var result = await commands.ExecuteAsync(context, argPos, _provider);
-
-
-
-                        //If the command failed, notify the user
-                        if (!result.IsSuccess)
-                        {
-
-                            // var emote = context.Guild.Emotes.First(x => x.Name == "x");
-                            byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
-                            var emote = new Emoji("❌");
-
-                            if (emote != null)
-                            {
-                                await message.AddReactionAsync(emote, null);
-                            }
-
-                            //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
-                        }
+                        await this.ExecuteCommand(message, context, argPos);
                         return;
                     }
                 }
@@ -281,22 +249,7 @@ namespace BotGear.Modules
                 else if(message.Content.Contains("setallowed_channels")==true )
                 {
                     //If the command failed, notify the user
-                    var result = await commands.ExecuteAsync(context, argPos, _provider);
-
-                    if (!result.IsSuccess)
-                    {
-
-                        // var emote = context.Guild.Emotes.First(x => x.Name == "x");
-                        byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
-                        var emote = new Emoji("❌");
-
-                        if (emote != null)
-                        {
-                            await message.AddReactionAsync(emote, null);
-                        }
-
-                        //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
-                    }
+                   await this.ExecuteCommand(message, context, argPos);
                     return;
                 }
               
@@ -332,22 +285,7 @@ namespace BotGear.Modules
                          await context.Guild.GetDefaultChannelAsync().Result.SendMessageAsync("Allowed  Channels  had been Set");
                      }*/
 
-                    var result = await commands.ExecuteAsync(context, argPos, _provider);
-
-                    if (!result.IsSuccess)
-                    {
-
-                        // var emote = context.Guild.Emotes.First(x => x.Name == "x");
-                        byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
-                        var emote = new Emoji("❌");
-
-                        if (emote != null)
-                        {
-                            await message.AddReactionAsync(emote, null);
-                        }
-
-                        //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
-                    }
+                   await this.ExecuteCommand(message, context, argPos);
                     return;
                 }
                 
@@ -386,5 +324,62 @@ namespace BotGear.Modules
             }
         }
 
+        private async Task ExecuteCommand(SocketMessage parameterMessage, CommandContext context, int argPos)
+        {
+            try
+            {
+                var message = parameterMessage as SocketUserMessage;
+                if (message == null || context ==null) return;
+                var result = await commands.ExecuteAsync(context, argPos, _provider);
+
+                if (!result.IsSuccess)
+                {
+
+                    // var emote = context.Guild.Emotes.First(x => x.Name == "x");
+                    byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes("\\:x:");
+                    var emote = new Emoji("❌");
+
+                    if (emote != null)
+                    {
+                        await message.AddReactionAsync(emote, null);
+                    }
+
+                    //await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+                }
+
+            }
+            catch (HttpException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+                var message = parameterMessage as SocketUserMessage;
+                if (message == null)
+                {
+                    return;
+                }
+               // var context = new CommandContext(client, message);
+                if (context == null)
+                {
+                    return;
+                }
+                var appinf = await context.Client.GetApplicationInfoAsync();
+                if (appinf == null)
+                {
+                    return;
+                }
+                var dmchannel = await appinf.Owner.GetOrCreateDMChannelAsync();
+                if (dmchannel != null)
+                {
+                    await dmchannel.SendMessageAsync(String.Format("an Exception was thrown at :{0} {1}", DateTime.Now.ToLongDateString(),
+                        DateTime.Now.ToLongTimeString()));
+                }
+
+
+
+            }
+        }
     }
 }
