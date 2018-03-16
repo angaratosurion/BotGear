@@ -3,6 +3,7 @@ using BotGear.Managers;
 using BotGear.Tools;
 using Discord;
 using Discord.Commands;
+using Discord.Net;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -343,6 +344,10 @@ namespace BotGear.Modules
                     return;
                 }
                 
+            }
+            catch(HttpException)
+            {
+
             }
             catch (Exception ex)
             {
