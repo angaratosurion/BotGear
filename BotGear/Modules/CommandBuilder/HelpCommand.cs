@@ -22,7 +22,7 @@ namespace BotGear.Modules.CommandBuilder
             try
             {
 
-                string prefix = "!";  /* put your chosen prefix here */
+                string prefix = "!?";  /* put your chosen prefix here */
                 var builder = new EmbedBuilder()
                 {
                     Color = new Color(114, 137, 218),

@@ -213,9 +213,16 @@ namespace BotGear.Modules
                     int argPos = 0;
                     //Determine if the message has a valid prefix, adjust argPos
                     //if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasCharPrefix('!', ref argPos))) return;
-                    if (!(message.HasCharPrefix('!', ref argPos))) return;
+                    if (!(message.HasStringPrefix("!?", ref argPos))) return;
+                if (message.HasStringPrefix("!?", ref argPos) && message.Content == "!?") return;
+                   
 
-                    //Create a Command Context
+
+
+
+
+
+                //Create a Command Context
                     var context = new CommandContext(client, message);
                 
                 var channeltype = context.Channel.GetType();
