@@ -21,6 +21,7 @@ namespace BotGear.Data
                 //System.IO.Directory.GetCurrentDirectory();
                 AppDomain.CurrentDomain.SetData("DataDirectory", path);
                 this.Configuration.AutoDetectChangesEnabled = true;
+              
             }
             catch(StackOverflowException ex)
             {
@@ -29,13 +30,15 @@ namespace BotGear.Data
 
         }
       
-
+        
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
 
-           // base.OnModelCreating(modelBuilder);
+             
             modelBuilder.Properties<DateTime?>()
                   .Configure(c => c.HasColumnType("datetime2"));
+            
+            base.OnModelCreating(modelBuilder);
 
         }
         public static BotGearContext Create()
