@@ -42,17 +42,19 @@ namespace BotGear.Tools.ImageDownloader
                     //while (true)
                     {
                         var list  = sImage.Search(sOption);
+                        
 
                         if ( list == null || list.Count==1)
                         {
                             return null;
                         }
+
                         foundPosts.AddRange(list);
                         if (list.Count == 1 && list[0] != null)
                         {
                             // break;
                         }
-                       
+                        foundPosts.RemoveAll(x => x.Extention == "png" || x.Extention== "jpg" || x.Extention == "jpeg");
 
 
                     }
