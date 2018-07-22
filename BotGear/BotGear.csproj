@@ -262,8 +262,9 @@
     <Compile Include="Managers\ServerManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Modules\BotGearCommands.cs" />
+    <Compile Include="Modules\BotConfigurationandControl.cs" />
     <Compile Include="Modules\CommandBuilder\HelpCommand.cs" />
+    <Compile Include="Modules\UserManagment.cs" />
     <Compile Include="Tools\WelcomeMessageBulder.cs" />
     <Compile Include="Modules\CommandHandler.cs" />
     <Compile Include="Modules\MediaPalyer_old.cs" />

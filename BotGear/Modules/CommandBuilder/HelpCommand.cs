@@ -38,7 +38,8 @@ namespace BotGear.Modules.CommandBuilder
                         {
                             var result = await cmd.CheckPreconditionsAsync(Context); /* gotta check if they pass */
                             if (result.IsSuccess)
-                                description += $"{prefix}{cmd.Aliases.First()}\n"; /* if they DO pass, we ADD that command's first alias (aka it's actual name) to the description tag of this embed */
+                                description += $"{prefix}{cmd.Aliases.First()}\n"; /* if they DO pass, we ADD that command's first alias (aka it's actual name) 
+                            to the description  tag of this embed */
                         }
 
                         if (!string.IsNullOrWhiteSpace(description)) /* if the module wasn't empty, we go and add a field where we drop all the data into! */
