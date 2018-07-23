@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordGamesPlugin", "DiscordGamesPlugin\DiscordGamesPlugin.csproj", "{C489431A-CF2B-4919-915C-C08900858CE3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageSharp.Drawing", "NeededThings\ImageSharp.Drawing\ImageSharp.Drawing.csproj", "{0002B196-F093-4883-B7C9-43A783C1DE16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageSharp", "NeededThings\ImageSharp\ImageSharp.csproj", "{18BAAD80-426F-4780-B2C9-CB2C9F32C91C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotGear", "..\..\BotGear\BotGear.csproj", "{003CEE66-D4ED-4970-A6BD-27E4B4411520}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C489431A-CF2B-4919-915C-C08900858CE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C489431A-CF2B-4919-915C-C08900858CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C489431A-CF2B-4919-915C-C08900858CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C489431A-CF2B-4919-915C-C08900858CE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0002B196-F093-4883-B7C9-43A783C1DE16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0002B196-F093-4883-B7C9-43A783C1DE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0002B196-F093-4883-B7C9-43A783C1DE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0002B196-F093-4883-B7C9-43A783C1DE16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18BAAD80-426F-4780-B2C9-CB2C9F32C91C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18BAAD80-426F-4780-B2C9-CB2C9F32C91C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18BAAD80-426F-4780-B2C9-CB2C9F32C91C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18BAAD80-426F-4780-B2C9-CB2C9F32C91C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4809B739-B1A9-4D7B-A73E-B65C1B1F43D3}
+	EndGlobalSection
+EndGlobal

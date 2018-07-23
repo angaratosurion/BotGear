@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "replyplug", "replyplug\replyplug.csproj", "{DFC33A75-BE92-4424-81E5-660E84A876D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotGear", "..\..\BotGear\BotGear.csproj", "{003CEE66-D4ED-4970-A6BD-27E4B4411520}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFC33A75-BE92-4424-81E5-660E84A876D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFC33A75-BE92-4424-81E5-660E84A876D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFC33A75-BE92-4424-81E5-660E84A876D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFC33A75-BE92-4424-81E5-660E84A876D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{003CEE66-D4ED-4970-A6BD-27E4B4411520}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A87F9ABA-6E43-40B0-BB29-D0068F1090F3}
+	EndGlobalSection
+EndGlobal
