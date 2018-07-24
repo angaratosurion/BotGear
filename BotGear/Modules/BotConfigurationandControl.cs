@@ -131,19 +131,71 @@ namespace BotGear.Modules
                 {
                     var conf = await srvConfmngr.GetServersConfigurationById(serverid);
 
-                    var channel = Context.Guild.GetTextChannelsAsync().Result.First(x => x.Name == conf.rules_channel_name);
+                    var channel =await  Context.User.GetOrCreateDMChannelAsync();
+                        //Context.Guild.GetTextChannelsAsync().Result.First(x => x.Name == conf.rules_channel_name);
                     string trules = conf.rules;
 
                     if (channel != null)
                     {
-                       
-                        await channel.SendMessageAsync("Rules : \n " + trules);
+                        var messages = await channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+
+                        await channel.SendMessageAsync(String.Format("Rules for the {0} Server : \n {1} " ,Context.Guild.Name, trules));
                     }                
                     else
                     {
                         await ReplyAsync("Rules : \n " + trules);
                     }
                     
+
+                }
+                else
+                {
+                    await ReplyAsync("use the command set rule channel to create the server config");
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("updateruleschat")]
+        [Summary("Posts the current rules to the channel with the rules")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireBotPermission(ChannelPermission.ManageMessages)]
+        public async Task UpdateRulesChat()
+        {
+            try
+            {
+
+                String serverid = Convert.ToString(this.Context.Guild.Id);
+                if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                {
+                    var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+
+                    var channel = Context.Guild.GetTextChannelsAsync().Result.First(x => x.Name == conf.rules_channel_name);
+                    string trules = conf.rules;
+
+                    if (channel != null)
+                    {
+                        //var messages = await channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+
+                        //while (messages != null)
+                        //{
+                        //    channel.DeleteMessagesAsync(messages);
+
+                        //    messages = await channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+
+                        //}
+                        await channel.SendMessageAsync("Rules : \n " + trules);
+                    }
+                    else
+                    {
+                        await ReplyAsync("Rules : \n " + trules);
+                    }
+
 
                 }
                 else

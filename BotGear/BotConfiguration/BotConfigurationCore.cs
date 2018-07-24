@@ -10,6 +10,7 @@ using Discord.Commands;
 using BotGear.Modules;
 using System.IO;
 using BotGear.Tools;
+using BotGear.Interfaces;
 
 namespace BotGear.BotConfiguration
 {
@@ -17,10 +18,11 @@ namespace BotGear.BotConfiguration
     {
         private DiscordSocketClient _client;
         private IConfiguration _config;
+        private IBot bot;
 
 
 
-        public async Task<DiscordSocketClient> ConfigureBot(DiscordSocketClient tclient, CommandHandler commhndl)
+        public async Task<DiscordSocketClient> ConfigureBot(DiscordSocketClient tclient, CommandHandler commhndl,IBot tbot)
         {
             try
             {
@@ -32,6 +34,7 @@ namespace BotGear.BotConfiguration
                     // services.GetRequiredService<LogService>();
                     await services.GetRequiredService<CommandHandler>().Install(services);
                     tclient.Disconnected += Tclient_Disconnected;
+                    bot = tbot;
                 }
                 return _client;
             }
@@ -51,8 +54,10 @@ namespace BotGear.BotConfiguration
 
 
                 Task.Delay(10000);
-                System.Diagnostics.Process.Start("launch.cmd");
-                Environment.Exit(0);
+                /*System.Diagnostics.Process.Start("launch.cmd");
+                Environment.Exit(0);*/
+                bot.Configure();
+                bot.Start();
                 return Task.CompletedTask;
             }
             catch (Exception ex)
