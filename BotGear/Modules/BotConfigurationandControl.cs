@@ -136,6 +136,7 @@ namespace BotGear.Modules
 
                     if (channel != null)
                     {
+                        await this.ClearChannel();
                         await channel.SendMessageAsync("Rules : \n " + trules);
                     }                
                     else
@@ -561,6 +562,31 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
 
+        }
+        [Command("purge")]
+        [Summary("Deletes all messages.")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireBotPermission(ChannelPermission.ManageMessages)]
+        public async Task ClearChannel()
+        {
+            try
+            {
+                var messages =await  Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+                while(messages !=null)
+                {
+                        await Context.Channel.DeleteMessagesAsync(messages);
+
+                    messages = await Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+                }
+                
+                
+
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
         }
     }
 }
