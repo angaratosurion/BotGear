@@ -136,7 +136,7 @@ namespace BotGear.Modules
 
                     if (channel != null)
                     {
-                        await this.ClearChannel();
+                       
                         await channel.SendMessageAsync("Rules : \n " + trules);
                     }                
                     else
@@ -571,15 +571,18 @@ namespace BotGear.Modules
         {
             try
             {
-                var messages =await  Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
-                while(messages !=null)
+               // var messages =await  Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+                var messages =await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 100,CacheMode.AllowDownload,null).Flatten();
+
+                while (messages !=null)
                 {
                         await Context.Channel.DeleteMessagesAsync(messages);
 
-                    messages = await Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+                    messages = await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 100, CacheMode.AllowDownload, null).Flatten();
+
                 }
-                
-                
+
+
 
 
             }
