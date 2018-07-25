@@ -615,33 +615,6 @@ namespace BotGear.Modules
             }
 
         }
-        [Command("purge")]
-        [Summary("Deletes all messages.")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireBotPermission(ChannelPermission.ManageMessages)]
-        public async Task ClearChannel()
-        {
-            try
-            {
-               // var messages =await  Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
-                var messages =await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 100,CacheMode.AllowDownload,null).Flatten();
-
-                while (messages !=null)
-                {
-                        await Context.Channel.DeleteMessagesAsync(messages);
-
-                    messages = await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 100, CacheMode.AllowDownload, null).Flatten();
-
-                }
-
-
-
-
-            }
-            catch (Exception ex)
-            {
-                CommonTools.ErrorReporting(ex);
-            }
-        }
+       
     }
 }
