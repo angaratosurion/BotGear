@@ -56,8 +56,8 @@ namespace BotGear.BotConfiguration
                 Task.Delay(10000);
                 /*System.Diagnostics.Process.Start("launch.cmd");
                 Environment.Exit(0);*/
-                bot.Configure();
-                bot.Start();
+                //bot.Configure();
+               bot.Start();
                 return Task.CompletedTask;
             }
             catch (Exception ex)

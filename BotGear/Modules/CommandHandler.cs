@@ -330,6 +330,8 @@ namespace BotGear.Modules
             {
                 var message = parameterMessage as SocketUserMessage;
                 if (message == null || context ==null) return;
+                var channel = context.Channel;
+              await  channel.TriggerTypingAsync(null);
                 var result = await commands.ExecuteAsync(context, argPos, _provider);
 
                 if (!result.IsSuccess)
@@ -353,7 +355,7 @@ namespace BotGear.Modules
 
             }
             catch (Exception ex)
-            {
+            { 
                 CommonTools.ErrorReporting(ex);
                 var message = parameterMessage as SocketUserMessage;
                 if (message == null)

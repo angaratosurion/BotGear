@@ -22,16 +22,47 @@ namespace BotGear.Modules
             try
             {
                 // var messages =await  Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
-                var messages = await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 100, CacheMode.AllowDownload, null).Flatten();
+                var messages = await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, int.MaxValue, CacheMode.AllowDownload, null).Flatten();
 
-                while (messages != null)
-                {
-                    await Context.Channel.DeleteMessagesAsync(messages);
+               
+                    Context.Channel.DeleteMessagesAsync(messages);
 
-                    messages = await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 100, CacheMode.AllowDownload, null).Flatten();
+                    
+               
 
-                }
 
+               await ReplyAsync(String.Format("Channel got Cleaned!"));
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
+        [Command("purge")]
+        [Summary("Deletes all messages.")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireBotPermission(ChannelPermission.ManageMessages)]
+        public async Task ClearChannel(string name)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(name)) return;
+                var channels = await Context.Guild.GetTextChannelsAsync(CacheMode.AllowDownload);
+                var channel   =  channels.FirstOrDefault(x => x.Name == name||x.Mention==name);
+                if (channel == null) return;
+                // var messages =await  Context.Channel.GetMessagesAsync(100, CacheMode.AllowDownload, null).Flatten();
+                var messages = await channel.GetMessagesAsync(Context.Message, Direction.Before, int.MaxValue, CacheMode.AllowDownload, null).Flatten();
+
+               // while (messages != null)
+                //{
+                    channel.DeleteMessagesAsync(messages);
+
+                    ///messages = await  channel.GetMessagesAsync(Context.Message, Direction.Before, 10, CacheMode.AllowDownload, null).Flatten();
+
+                //}
+               await ReplyAsync(String.Format ("Channel {0} got Cleaned!",channel.Name));
+              
 
 
 
@@ -55,7 +86,7 @@ namespace BotGear.Modules
                 {
                     var guild = Context.Guild;
                     var newchannel =await guild.CreateTextChannelAsync(name, null);
-                    await ReplyAsync(String.Format("Channel {0} have been Created!", name));
+                    await ReplyAsync(String.Format("Channel {0} have been Created!", newchannel.Mention));
 
                 }
 
@@ -82,11 +113,11 @@ namespace BotGear.Modules
                 {
                     var guild = Context.Guild;
                     var channels = await guild.GetTextChannelsAsync(CacheMode.AllowDownload);
-                    if (channels != null &&  channels.FirstOrDefault(x => x.Name == name) != null)
+                    if (channels != null &&  channels.FirstOrDefault(x => x.Name == name || x.Mention == name) != null)
                     {
-                        var channel =  channels.FirstOrDefault(x => x.Name == name);
+                        var channel =  channels.FirstOrDefault(x => x.Name == name || x.Mention == name);
                         await channel.DeleteAsync(null);
-                        await ReplyAsync(String.Format("Channel {0} have been Deleted!", name));
+                        await ReplyAsync(String.Format("Channel {0} have been Deleted!", channel.Mention));
                     }
 
                 }
@@ -141,9 +172,9 @@ namespace BotGear.Modules
                 {
                     var guild = Context.Guild;
                     var channels = await guild.GetVoiceChannelsAsync(CacheMode.AllowDownload);
-                    if (channels != null && channels.FirstOrDefault(x => x.Name == name) != null)
+                    if (channels != null && channels.FirstOrDefault(x => x.Name == name ) != null)
                     {
-                        var channel = channels.FirstOrDefault(x => x.Name == name);
+                        var channel = channels.FirstOrDefault(x => x.Name == name );
                         await channel.DeleteAsync(null);
                         await ReplyAsync(String.Format("Channel {0} have been Deleted!", name));
                     }
