@@ -222,13 +222,13 @@ namespace BotGear.Modules
                 if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
                 {
                     var conf = await srvConfmngr.GetServersConfigurationById(serverid);
-
+                    string mentions = conf.allow_channels_mentions;
 
                     string text = String.Format("Rules Channel :{0}\n Rules :\n {1}\n\n Notify on Rules Cahnge {2}\n" +
-                        " Allowed channels for the bot to type{3}\n" +
-                        "Welcome and Goodbyes Channel :{4}\n Welcome Message:{5}\n"
+                        "Welcome and Goodbyes Channel :{4}\n Welcome Message:{5}\n"+ " Allowed channels for the bot to type by name : {3}\n by Mentions :"
 
-                        , conf.rules_channel_name, conf.rules, conf.Notify_everyon_rulesChange,conf.allow_channels_name,conf.welcome_channel_name,conf.welcome_message);
+                        , conf.rules_channel_name, conf.rules, conf.Notify_everyon_rulesChange,conf.allow_channels_name,conf.welcome_channel_name,conf.welcome_message)
+                        +mentions;
 
 
                     await ReplyAsync("Server Configuration :: \n " + text);
@@ -372,6 +372,66 @@ namespace BotGear.Modules
                 CommonTools.ErrorReporting(ex);
             }
         }
+        [Command("setallowed_channelsbymentions")]
+        [Summary("Sets the  Channels  for the bot to reply")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task setAllowedChannelsByMentions(string channels)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(channels) != true)
+                {
+                    String serverid = Convert.ToString(this.Context.Guild.Id);
+                    if (await srvConfmngr.ServersConfigurationExists(serverid) == true)
+                    {
+                        var conf = await srvConfmngr.GetServersConfigurationById(serverid);
+                        conf.allow_channels_mentions = channels;
+
+                        await srvConfmngr.EditServerConfiguration(serverid, conf);
+                        await ReplyAsync("Channels had been Set");
+
+
+                    }
+
+                    else if (await srvConfmngr.ServersConfigurationExists(serverid) == true
+                    && await srvmngr.ServerExists(serverid) != true)
+                    {
+
+                        var oldconf = await srvConfmngr.GetServersConfigurationById(serverid);
+                        oldconf.allow_channels_mentions = channels;
+                        await srvConfmngr.EditServerConfiguration(serverid, oldconf);
+
+                        await srvmngr.addServer(this.Context.Guild);
+                        await ReplyAsync("Allowed  Channels had been Set");
+                    }
+                    else if (await srvConfmngr.ServersConfigurationExists(serverid) != true && await srvmngr.ServerExists(serverid) == true)
+                    {
+                        BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                        conf.ServerId = serverid;
+                        conf.allow_channels_mentions = channels;
+                        await this.srvConfmngr.AddServerConfiguration(conf);
+                        await ReplyAsync("Allowed  Channels  had been Set");
+                    }
+
+                    else
+                    {
+                        await srvmngr.addServer(this.Context.Guild);
+                        BotGearServerConfiguration conf = new BotGearServerConfiguration();
+                        conf.ServerId = serverid;
+                        conf.allow_channels_mentions = channels;
+                        await this.srvConfmngr.AddServerConfiguration(conf);
+                        await ReplyAsync("Allowed  ChannelsChannel had been Set");
+                    }
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                CommonTools.ErrorReporting(ex);
+            }
+        }
         [Command("allowedcahnenels")]
         [Summary("Sets  the  Channels  for the bot to reply")]
         public async Task getAllowedChannels()
@@ -386,9 +446,10 @@ namespace BotGear.Modules
 
 
                     string trules = conf.allow_channels_name;
+                    string mentions = conf.allow_channels_mentions;
 
 
-                    await ReplyAsync("Allowed Channels : \n " + trules);
+                    await ReplyAsync(String.Format("Allowed Channels By Name: \n {0} \n By Mentions :" , trules)+mentions);
 
                 }
                 

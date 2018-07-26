@@ -20,6 +20,7 @@ namespace BotGear.Data.Models
         public string welcome_channel_name { get; set; }
 
         public string allow_channels_name { get; set; }
+        public string allow_channels_mentions { get; set; }
         public string welcome_message { get; set; }
     }
 }

@@ -236,10 +236,12 @@ namespace BotGear.Modules
                 //Execute the command, store the result
                 var conf = await confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(context.Guild).Id);
                 if (conf != null && conf.allow_channels_name != null && channeltype!=typeof(SocketDMChannel)
-                    &&context.Guild!=null)
+                    &&context.Guild!=null&&conf.allow_channels_mentions!=null)
                 {
                     string[] allowedcahnels = conf.allow_channels_name.Split(',');
-                    if (allowedcahnels != null && allowedcahnels.Contains(context.Channel.Name))
+                    string[] allowedchannelmentions = conf.allow_channels_mentions.Split(',');
+                    if (allowedcahnels != null && allowedcahnels.Contains(context.Channel.Name) 
+                        ||( allowedchannelmentions!=null) && allowedchannelmentions.Contains("#"+context.Channel.Id)==true )                      
                     {
                         await this.ExecuteCommand(message, context, argPos);
                         return;
