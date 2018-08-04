@@ -24,11 +24,11 @@ namespace BotGear.Managers
                 if (iuser != null && reason != null && iguild != null)
                 {
 
-                    BotGearUser user = await userMngr.GetUserbyId(iuser);
-                    BotGearPreBannedUser  exuser = await this.GetPreBannedUserbyId(user.Id);
+                    
+                    BotGearPreBannedUser  exuser = await this.GetPreBannedUserbyIdAndServerId(iuser, Convert.ToString(iguild.Id));
                     BotGearServer srv = this.conv.IGuildToBotGearServer(iguild);
 
-                    if (user != null && exuser == null && srv != null)
+                    if (exuser == null && srv != null)
                     {
                         if (await srvMngr.ServerExists(srv.Id) != true)
                         {
@@ -41,21 +41,14 @@ namespace BotGear.Managers
                         }
                         exuser = new BotGearPreBannedUser();
                         exuser.ServerId = srv.Id;
-                        exuser.UserId = user.Id;
+                        exuser.UserId = iuser;
                         exuser.Date = DateTime.Now;
                         exuser.Reason = reason;
                         db.PreBannedUsers.Add(exuser);
 
                         db.SaveChanges();                        
                     }
-                    else if (user != null && exuser != null && srv != null)
-                    {
-                        if (exuser.UserId==user.Id && exuser.ServerId==srv.Id)
-                        {
-                           // await this.srvMngr.addServer(iguild);
-                        }
-                       
-                    }
+                   
 
 
                 }
@@ -65,17 +58,18 @@ namespace BotGear.Managers
             {
 
                 CommonTools.ErrorReporting(ex);
+               
 
             }
         }
-        public async Task<BotGearPreBannedUser> GetPreBannedUserbyId(string id)
+        public async Task<BotGearPreBannedUser> GetPreBannedUserbyIdAndServerId(string id,string serverid)
         {
             try
             {
                 BotGearPreBannedUser user = null;
-                if (id != null)
+                if (id != null && serverid!=null)
                 {
-                    user = db.PreBannedUsers.FirstOrDefault(x => x.UserId== id);
+                    user = db.PreBannedUsers.FirstOrDefault(x => x.UserId== id && x.ServerId==serverid);
 
 
                 }
@@ -118,17 +112,16 @@ namespace BotGear.Managers
 
                 if (iuser != null)
                 {
-                    BotGearPreBannedUser user = await this.GetPreBannedUserbyId(iuser );
+                    BotGearPreBannedUser user = await this.GetPreBannedUserbyIdAndServerId(iuser,Convert.ToString(iguild.Id) );
                     var srvid =   Convert.ToString(iguild.Id);
-                    if (user != null &&  user.ServerId==srvid)
-                    {
+                   
 
                        
                         db.PreBannedUsers.Remove(user);
 
                         await db.SaveChangesAsync();
 
-                    }
+                    
 
                 }
 
@@ -137,6 +130,29 @@ namespace BotGear.Managers
             {
 
                 CommonTools.ErrorReporting(ex);
+
+            }
+        }
+        public List<BotGearPreBannedUser> GetPreBannedUsers(string serverid)
+        {
+            try
+            {
+                List<BotGearPreBannedUser> users = null;
+                if (serverid != null)
+                {
+                    users = db.PreBannedUsers.Where(x=>x.ServerId==serverid).ToList();
+                }
+
+
+
+                return users;
+
+            }
+            catch (Exception ex)
+            {
+
+                CommonTools.ErrorReporting(ex);
+                return null;
 
             }
         }

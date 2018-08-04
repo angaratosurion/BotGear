@@ -169,8 +169,9 @@ namespace BotGear.Modules
             {
                 var conf = confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(user.Guild).Id).Result;
                 WelcomeMessageBulder welcomeMeesageBulder = new WelcomeMessageBulder();
-                var prbanuser =   prEmpBanUserMngr.GetPreBannedUserbyId(Convert.ToString(user.Id)).Result;
-                if ( prbanuser !=null && prbanuser.ServerId== Convert.ToString(user.Guild.Id))
+                var prbanuser =   prEmpBanUserMngr.GetPreBannedUserbyIdAndServerId(Convert.ToString(user.Id),
+                    Convert.ToString(user.Guild.Id)).Result;
+                if ( prbanuser !=null )
                 {
                     user.Guild.AddBanAsync(user, 0, "The user was Premptivaely Banned");
                 }
