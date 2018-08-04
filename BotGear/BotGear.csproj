@@ -251,6 +251,7 @@
     <Compile Include="Data\Models\BotGearUsersServers.cs" />
     <Compile Include="Data\Models\BotGearUser.cs" />
     <Compile Include="Data\Models\BotGearServer.cs" />
+    <Compile Include="Data\Models\BotGearPreBannedUser.cs" />
     <Compile Include="Data\ViewModels\BotGearViewServer.cs" />
     <Compile Include="Data\ViewModels\BotGearViewUser.cs" />
     <Compile Include="EmptyBotInfo.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Interfaces\IBot.cs" />
     <Compile Include="Interfaces\IBotInfo.cs" />
     <Compile Include="Interfaces\IModuleInfo.cs" />
+    <Compile Include="Managers\PreBannedUserManager.cs" />
     <Compile Include="Managers\ServerConfigManager.cs" />
     <Compile Include="Managers\ServerManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
@@ -265,6 +267,7 @@
     <Compile Include="Modules\BotConfigurationandControl.cs" />
     <Compile Include="Modules\ChatManager.cs" />
     <Compile Include="Modules\CommandBuilder\HelpCommand.cs" />
+    <Compile Include="Modules\PreEmptiveBanining.cs" />
     <Compile Include="Modules\UserManagment.cs" />
     <Compile Include="Tools\WelcomeMessageBulder.cs" />
     <Compile Include="Modules\CommandHandler.cs" />

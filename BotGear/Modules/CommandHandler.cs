@@ -23,6 +23,7 @@ namespace BotGear.Modules
         ModuleConverter mdconv = new ModuleConverter();
         /// private IDependencyMap map;
        ServerManager srvmngr = new ServerManager();
+        PreBannedUserManager prEmpBanUserMngr = new PreBannedUserManager();
          
 
         public CommandHandler(IServiceProvider provider, DiscordSocketClient discord, CommandService tcommands)
@@ -168,6 +169,13 @@ namespace BotGear.Modules
             {
                 var conf = confmngr.GetServersConfigurationById(this.mdconv.IGuildToBotGearServer(user.Guild).Id).Result;
                 WelcomeMessageBulder welcomeMeesageBulder = new WelcomeMessageBulder();
+                var prbanuser =   prEmpBanUserMngr.GetPreBannedUserbyId(Convert.ToString(user.Id)).Result;
+                if ( prbanuser !=null && prbanuser.ServerId== Convert.ToString(user.Guild.Id))
+                {
+                    user.Guild.AddBanAsync(user, 0, "The user was Premptivaely Banned");
+                }
+                  
+                 
                 if (conf != null && conf.welcome_channel_name != null)
                 {
                     var channel = user.Guild.TextChannels.First(x => x.Name == conf.welcome_channel_name);

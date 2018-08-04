@@ -50,5 +50,7 @@ namespace BotGear.Data
         public IDbSet<BotGearServer> Servers { get; set; }
         public IDbSet<BotGearUsersServers> UsersServers { get; set; }
         public IDbSet<BotGearServerConfiguration> ServerConfiguration { get; set; }
+        public IDbSet<BotGearPreBannedUser> PreBannedUsers { get; set; }
+
     }
 }
