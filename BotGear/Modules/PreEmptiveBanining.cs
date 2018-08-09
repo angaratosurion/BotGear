@@ -99,7 +99,7 @@ namespace BotGear.Modules
                 foreach (var user in users)
                 {
                     var reason = user.Reason;
-                    embed.Description += $"**Username: **{user}\n**Guild Name: **{Context.Guild.Name}\n**Reason: **{reason}\n"; ///Embed values///]
+                    embed.Description += $"**Username: **{user.UserId}\n**Guild Name: **{Context.Guild.Name}\n**Reason: **{reason}\n"; ///Embed values///]
 
                 }
                 await Context.Channel.SendMessageAsync("", false, embed.Build());///sends embed///              
